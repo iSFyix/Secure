@@ -1,0 +1,8 @@
+<%- include('partials/head') %>
+<%- include('partials/sidebar') %>
+<div class="ph"><h1><%= title %></h1><p>Welcome &amp; goodbye cards. Visual editor in new dashboard.</p></div>
+<div class="card"><h2>Welcome</h2>
+<div class="row"><div><span class="lb">Enabled</span></div><span class="pill<%= (typeof settings !== 'undefined' && settings.welcome && settings.welcome.enabled) ? ' on' : '' %>"><%= (typeof settings !== 'undefined' && settings.welcome && settings.welcome.enabled) ? 'on' : 'off' %></span></div>
+<div class="row"><div><span class="lb">Channel</span><small><%= (typeof settings !== 'undefined' && settings.welcome && settings.welcome.channelId) || '—' %> · <%= (typeof channels !== 'undefined' ? channels.length : 0) %> channels</small></div><a class="btn p" href="/dashboard#welcome">Open Welcome editor</a></div>
+</div>
+<%- include('partials/foot') %>

@@ -1,0 +1,277 @@
+<% const VLOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23000'/%3E%3Ccircle cx='32' cy='32' r='29' fill='none' stroke='%23c9ccd4' stroke-width='2'/%3E%3Ctext x='32' y='44' font-size='30' text-anchor='middle' fill='%23f2f2f5' font-family='sans-serif' font-weight='bold'%3EV%3C/text%3E%3C/svg%3E"; %>
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="brand">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vela — Powerful Discord Bot</title>
+<meta name="description" content="Powerful tools to manage, protect and grow your Discord community.">
+<meta property="og:title" content="Vela — Powerful Discord Bot"><meta property="og:description" content="Powerful tools to manage, protect and grow your Discord community."><meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="/">
+<link rel="icon" href="<%= VLOGO %>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#0e1013;--bg2:#14171c;--bg3:#1a1e25;--line:#262b34;--tx:#e9ebef;--mut:#98a0ae;--acc:#a9b9d8;--glow:rgba(169,185,216,.14);--ok:#9bd0b0;color-scheme:dark}
+:root[data-theme=light]{--bg:#f3f4f6;--bg2:#fff;--bg3:#eceef2;--line:#d8dce3;--tx:#12151a;--mut:#5b6472;--acc:#4a5f8c;--glow:rgba(74,95,140,.12);--ok:#2f7a4f;color-scheme:light}
+@media(prefers-color-scheme:light){:root:not([data-theme=dark]){--bg:#f3f4f6;--bg2:#fff;--bg3:#eceef2;--line:#d8dce3;--tx:#12151a;--mut:#5b6472;--acc:#4a5f8c;--glow:rgba(74,95,140,.12);--ok:#2f7a4f;color-scheme:light}}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{font:400 16px/1.6 Sora,system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;padding-top:env(safe-area-inset-top,0)}
+body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(var(--line) 1px,transparent 1px) 0 0/64px 64px,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/64px 64px;opacity:.25;mask:radial-gradient(ellipse 70% 50% at 50% 0,#000,transparent)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:6px}
+.w{max-width:1160px;margin:0 auto;padding:0 24px}
+section{padding:96px 0}
+h1,h2,h3{line-height:1.1;letter-spacing:-.02em;font-weight:600}
+h1{font-size:clamp(2.4rem,6vw,4.4rem)}h2{font-size:clamp(1.8rem,4vw,2.7rem);margin-bottom:14px}h3{font-size:1.05rem;letter-spacing:0}
+.lead{color:var(--mut);max-width:520px;font-size:1.05rem}
+.head{margin-bottom:44px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:10px;font-weight:600;font-size:.92rem;border:1px solid var(--line);background:var(--bg2);color:var(--tx);cursor:pointer;transition:transform .15s,border-color .15s,background .15s;font-family:inherit}
+.btn:hover{border-color:var(--acc);transform:translateY(-1px)}.btn:active{transform:none}
+.btn.p{background:linear-gradient(180deg,var(--btn-hi,#f2f4f8),var(--btn-lo,#b9c0cc));color:var(--color-primary-content,#0e1013);border-color:transparent}
+.btn.p:hover{filter:brightness(1.06)}
+.btn.lg{padding:15px 28px;font-size:1rem}
+nav{position:sticky;top:0;z-index:50;transition:background .25s,border-color .25s,box-shadow .25s,backdrop-filter .25s;border-bottom:1px solid transparent}
+nav.s{background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-color:var(--line);box-shadow:0 6px 24px rgba(0,0,0,.18)}
+.nb{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700}
+.brand img{width:32px;height:32px;border-radius:50%}
+.links{display:flex;gap:26px;font-size:.9rem;color:var(--mut)}
+.links a:hover{color:var(--tx)}
+.na{display:flex;gap:10px;align-items:center}.na .btn{padding:9px 16px}
+.mb{display:none}
+.drawer{position:fixed;inset:0 0 0 auto;width:min(320px,86vw);background:var(--bg2);border-left:1px solid var(--line);z-index:60;padding:24px;display:flex;flex-direction:column;gap:6px;transform:translateX(100%);transition:transform .25s;visibility:hidden}
+.drawer.o{transform:none;visibility:visible}
+.drawer a{padding:12px 4px;border-bottom:1px solid var(--line)}
+.drawer .btn{margin-top:10px;border-bottom:1px solid var(--line)}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:55;opacity:0;pointer-events:none;transition:opacity .25s}.scrim.o{opacity:1;pointer-events:auto}
+.hero{padding:72px 0 64px;position:relative}
+.hg{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
+.badge{display:inline-flex;gap:8px;align-items:center;padding:6px 14px;border:1px solid var(--line);border-radius:99px;font-size:.78rem;color:var(--mut);background:var(--bg2);margin-bottom:22px}
+.badge i{width:7px;height:7px;border-radius:50%;background:var(--acc)}
+.hero h1 span{display:block;background:linear-gradient(180deg,var(--tx),var(--mut));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:22px 0 30px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.mini{display:flex;gap:22px;flex-wrap:wrap;margin-top:28px;color:var(--mut);font-size:.85rem}
+.logo{position:relative;display:grid;place-items:center}
+.logo:before{content:"";position:absolute;width:120%;aspect-ratio:1;background:radial-gradient(circle,var(--glow),transparent 65%)}
+.logo img{position:relative;width:min(380px,80%);border-radius:50%;box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 0 1px var(--line)}
+@media(prefers-reduced-motion:no-preference){.logo img{animation:fl 7s ease-in-out infinite}}
+@keyframes fl{50%{transform:translateY(-8px)}}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:56px}
+.quick div{background:var(--bg2);padding:18px 20px;font-size:.9rem;font-weight:500;display:flex;gap:10px;align-items:center}
+.ic{width:34px;height:34px;flex:none;border-radius:9px;background:var(--bg3);border:1px solid var(--line);display:grid;place-items:center;color:var(--acc)}
+.ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.frame{border:1px solid var(--line);border-radius:16px;background:var(--bg2);box-shadow:0 40px 90px rgba(0,0,0,.35),0 0 0 6px var(--glow);overflow:hidden}
+.fbar{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid var(--line);align-items:center;font-size:.75rem;color:var(--mut)}
+.fbar i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.scroll{overflow-x:auto}
+.dash{display:grid;grid-template-columns:200px 1fr;min-width:720px;min-height:340px;direction:ltr}
+.side{border-right:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:4px;background:var(--bg)}
+.sel{display:flex;gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:10px;font-size:.82rem;margin-bottom:10px;background:var(--bg2)}
+.sel b{width:26px;height:26px;border-radius:8px;background:var(--bg3);display:grid;place-items:center;font-size:.7rem}
+.tab{all:unset;cursor:pointer;padding:9px 12px;border-radius:8px;font-size:.85rem;color:var(--mut);transition:background .15s,color .15s}
+.tab:hover{background:var(--bg3);color:var(--tx)}
+.tab[aria-selected=true]{background:var(--bg3);color:var(--tx);box-shadow:inset 2px 0 var(--acc)}
+.pane{padding:22px;display:none}.pane.o{display:block}
+.pane h4{font-size:1rem;margin-bottom:4px}.pane small{color:var(--mut)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+.stat{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--bg)}
+.stat em{display:block;font-style:normal;color:var(--mut);font-size:.72rem}
+.stat b{font-size:1.3rem;color:var(--mut)}
+.bars{display:flex;gap:8px;align-items:flex-end;height:90px;border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--bg)}
+.bars i{flex:1;background:linear-gradient(var(--acc),transparent);opacity:.5;border-radius:4px 4px 0 0}
+.row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-size:.86rem;gap:12px}
+.tg{all:unset;box-sizing:border-box;width:36px;height:20px;min-width:44px;min-height:26px;border-radius:99px;background:var(--acc);position:relative;flex:none;cursor:default}
+.tg:after{content:"";position:absolute;top:3px;right:3px;width:14px;height:14px;border-radius:50%;background:var(--bg)}
+.tg.off{background:var(--line)}.tg.off:after{right:auto;left:3px;background:var(--mut)}
+.note{font-size:.78rem;color:var(--mut);margin-top:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{border:1px solid var(--line);border-radius:14px;padding:24px;background:var(--bg2);transition:border-color .2s,transform .2s,box-shadow .2s}
+.card:hover{border-color:var(--acc);transform:translateY(-3px);box-shadow:0 12px 40px var(--glow)}
+.card .ic{margin-bottom:16px}.card p{color:var(--mut);font-size:.9rem;margin-top:6px}
+.split{display:grid;grid-template-columns:1fr 1.1fr;gap:56px;align-items:center}
+.why{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.why div{padding:28px;background:var(--bg2);border:0 solid var(--line);border-width:0 1px 1px 0;margin:0 -1px -1px 0}
+.why p{color:var(--mut);font-size:.9rem;margin-top:6px}
+.vars{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.vars code{font:500 .75rem ui-monospace,Menlo,monospace;padding:3px 8px;border-radius:6px;background:var(--bg3);border:1px solid var(--line);cursor:pointer;color:var(--acc)}
+.field{display:block;margin-bottom:14px;font-size:.78rem;color:var(--mut)}
+.field input,.field textarea{display:block;width:100%;margin-top:6px;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--tx);font:inherit;font-size:.88rem;resize:none}
+.wp{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--bg);margin-top:4px;display:flex;gap:12px;align-items:flex-start}
+.wp img{width:38px;height:38px;border-radius:50%}
+.wp b{font-size:.9rem}.wp p{font-size:.88rem;color:var(--mut);white-space:pre-wrap;word-break:break-word}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chips span{padding:7px 14px;border:1px solid var(--line);border-radius:99px;font-size:.84rem;color:var(--mut);background:var(--bg2)}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;counter-reset:s;position:relative}
+.steps:before{content:"";position:absolute;top:19px;left:8%;right:8%;height:1px;background:var(--line)}
+.step{position:relative;text-align:center;font-weight:500;font-size:.92rem}
+.step:before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:38px;height:38px;margin:0 auto 14px;border-radius:50%;background:var(--bg2);border:1px solid var(--acc);color:var(--acc);font-size:.85rem;position:relative}
+.cmds{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.cmd{display:flex;gap:14px;align-items:baseline;padding:14px 18px;border:1px solid var(--line);border-radius:10px;background:var(--bg2);transition:border-color .2s}
+.cmd:hover{border-color:var(--acc)}
+.cmd code{font:600 .92rem ui-monospace,Menlo,monospace;color:var(--acc);min-width:100px}.cmd span{color:var(--mut);font-size:.86rem}
+.band{border:1px solid var(--line);border-radius:18px;padding:48px;background:radial-gradient(ellipse at 50% 0,var(--glow),transparent 70%),var(--bg2);text-align:center}
+.band .lead{margin:0 auto 26px}
+details{border-bottom:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;padding:20px 0;font-weight:500;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";color:var(--acc);transition:transform .2s;font-size:1.3rem;line-height:1}
+details[open] summary:after{transform:rotate(45deg)}
+details p{color:var(--mut);padding:0 0 20px;max-width:680px;animation:dn .25s}
+@keyframes dn{from{opacity:0;transform:translateY(-4px)}}
+footer{border-top:1px solid var(--line);padding:56px 0 32px;background:var(--bg2)}
+.fg{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:32px}
+.fg h5{font-size:.85rem;margin-bottom:12px}.fg a{display:block;color:var(--mut);font-size:.88rem;padding:4px 0}.fg a:hover{color:var(--tx)}
+.fg p{color:var(--mut);font-size:.88rem;margin-top:12px;max-width:280px}
+.copy{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);color:var(--mut);font-size:.8rem}
+.rv{opacity:0;transform:translateY(8px);transition:opacity .25s cubic-bezier(.4,0,.2,1),transform .25s cubic-bezier(.4,0,.2,1)}.rv.in{opacity:1;transform:none}
+#ld{position:fixed;inset:0;z-index:100;display:grid;place-content:center;justify-items:center;gap:22px;background:var(--bg);transition:opacity .5s,visibility .5s}
+#ld.x{opacity:0;visibility:hidden}
+#ld img{width:96px;height:96px;border-radius:50%;box-shadow:0 0 60px var(--glow),0 0 0 1px var(--line);animation:pl 1.6s ease-in-out infinite}
+#ld i{width:160px;height:2px;background:var(--line);border-radius:2px;overflow:hidden;position:relative}
+#ld i b{position:absolute;inset:0;width:100%;background:var(--acc);transform:scaleX(0);transform-origin:left}
+#ld span{font:600 .9rem ui-monospace,Menlo,monospace;color:var(--mut);font-variant-numeric:tabular-nums}
+@keyframes pl{50%{transform:scale(1.05);box-shadow:0 0 90px var(--glow),0 0 0 1px var(--acc)}}
+body.ld{overflow:hidden}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}}
+@media(max-width:960px){.links,.na .btn.hd{display:none}.mb{display:inline-flex}.hg,.split{grid-template-columns:1fr}.logo{order:-1}.logo img{width:200px}.g3{grid-template-columns:repeat(2,1fr)}.quick{grid-template-columns:repeat(2,1fr)}.steps{grid-template-columns:1fr;text-align:left}.steps:before{display:none}.step{display:flex;gap:14px;align-items:center}.step:before{margin:0}.fg{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){section{padding:64px 0}.g3,.cmds,.why{grid-template-columns:1fr}.cta .btn{width:100%}.band{padding:32px 20px}.fg{grid-template-columns:1fr}.na .lg2{display:none}}
+</style>
+<link rel="stylesheet" href="/css/brand-theme.css">
+</head>
+<body class="ld">
+<div id="ld" role="status" aria-label="Loading"><img src="<%= VLOGO %>" alt="" width="96" height="96"><i><b id="lb"></b></i><span id="lp">0%</span></div>
+<noscript><style>#ld{display:none}body.ld{overflow:auto}.rv{opacity:1;transform:none}</style></noscript>
+<a href="#main" class="btn" style="position:absolute;left:-999px" onfocus="this.style.left='8px'" onblur="this.style.left='-999px'">Skip to content</a>
+<nav id="nav"><div class="w nb">
+<a class="brand" href="#home"><img src="<%= VLOGO %>" alt="Vela bot logo" width="32" height="32"><span class="bn">Vela</span></a>
+<div class="links" id="links"></div>
+<div class="na"><a class="btn hd lg2" href="/auth/discord">Login with Discord</a><a class="btn p hd" href="<%= inviteUrl %>">Add to Discord</a>
+<button class="btn mb" id="mb" aria-label="Open menu" aria-expanded="false" aria-controls="dr">Menu</button></div></div></nav>
+<div class="scrim" id="sc"></div>
+<aside class="drawer" id="dr" aria-label="Mobile navigation"></aside>
+
+<main id="main">
+<header class="hero" id="home"><div class="w hg">
+<div><span class="badge"><i></i>Powerful Discord bot</span>
+<h1>Your Discord server,<span>powered better.</span></h1>
+<p class="lead">Everything you need to manage, protect and grow your Discord community.</p>
+<div class="cta"><a class="btn p lg" href="<%= inviteUrl %>">Add to Discord</a><a class="btn lg" href="/dashboard">View Dashboard</a></div>
+<div class="mini"><span>Fast setup</span><span>Configure from the web</span><span>Built for 24/7 use</span></div></div>
+<div class="logo"><img src="<%= VLOGO %>" alt="Vela logo" width="380" height="380"></div></div>
+<div class="w"><div class="quick" id="quick"></div></div></header>
+
+<section id="preview"><div class="w"><div class="head rv"><h2>Powerful control.<br>One dashboard.</h2><p class="lead">Configure your server, manage moderation, and control your bot from one place.</p></div>
+<div class="frame rv"><div class="fbar"><i></i><i></i><i></i><span style="margin-left:10px">dashboard / overview</span></div>
+<div class="scroll"><div class="dash" data-dash>
+<div class="side" role="tablist" aria-label="Dashboard preview"><div class="sel"><b>S</b>Select a server</div></div>
+<div class="panes"></div></div></div></div>
+<p class="note">Interface preview. Numbers are placeholders, not live data.</p></div></section>
+
+<section id="features"><div class="w"><div class="head rv"><h2>Everything your server needs.</h2></div><div class="g3 rv" id="fg"></div></div></section>
+
+<section><div class="w"><div class="head rv"><h2>Built for serious communities.</h2></div>
+<div class="why rv"><div><h3>Easy to configure</h3><p>Change settings on the web and skip memorizing commands.</p></div><div><h3>Powerful tools</h3><p>Moderation, logging, tickets and roles in one bot.</p></div><div><h3>Secure architecture</h3><p>Permission checks run before any action is taken.</p></div><div><h3>Centralized dashboard</h3><p>Every server setting lives in one place.</p></div></div></div></section>
+
+<section id="welcome"><div class="w split">
+<div class="rv"><h2>Welcome your members your way.</h2><p class="lead">Write the message, pick the channel and add an image. The preview updates as you type.</p>
+<div class="chips"><span>Welcome message</span><span>Goodbye message</span><span>Channel</span><span>Image</span><span>Variables</span></div></div>
+<div class="frame rv" style="padding:22px">
+<label class="field">Channel<input value="#welcome" id="wch"></label>
+<label class="field">Welcome message<textarea id="wm" rows="3">Welcome {user} to {server}! You are member #{count}.</textarea></label>
+<div class="vars" id="vars" aria-label="Insert variable"></div>
+<p class="field" style="margin:16px 0 6px">Preview</p>
+<div class="wp"><img src="<%= VLOGO %>" alt=""><div><b><span id="pn">Vela</span></b> <small style="color:var(--mut)" id="pc">#welcome</small><p id="pv" dir="auto"></p></div></div></div></div></section>
+
+<section id="moderation"><div class="w split">
+<div class="frame rv" data-mod style="padding:8px 22px"></div>
+<div class="rv"><h2>Moderation made simple.</h2><p class="lead">Handle problems fast, and let Automod deal with the routine ones.</p>
+<div class="chips"><span>Warnings</span><span>Timeouts</span><span>Bans</span><span>Kicks</span><span>Message cleanup</span><span>Automod</span></div></div></div></section>
+
+<section id="security"><div class="w"><div class="head rv"><h2>Built with security in mind.</h2><p class="lead">Practical safeguards in how the bot and dashboard work.</p></div><div class="g3 rv" id="sg"></div></div></section>
+
+<section><div class="w"><div class="head rv"><h2>Get started in minutes.</h2></div><div class="steps rv" id="st"></div></div></section>
+
+<section id="commands"><div class="w"><div class="head rv"><h2>Powerful commands.</h2><p class="lead">Generated from the shared command registry, so the site matches the bot.</p></div><div class="cmds rv" id="cm"></div></div></section>
+
+<section id="pricing"><div class="w"><div class="head rv"><h2>Simple pricing.</h2><p class="lead">Free for now. No hidden fees, no fake limits.</p></div><div class="g3 rv"><div class="card"><h3>Free</h3><p>All current features. Community support.</p><div class="chips"><span>Moderation</span><span>Logging</span><span>Tickets</span></div></div><div class="card"><h3>Premium</h3><p>Not available yet. When it launches, you will manage it from the dashboard.</p></div><div class="card"><h3>Self-host</h3><p>Run the bot yourself. You control the data and uptime.</p></div></div></div></section>
+
+<section id="status"><div class="w"><div class="head rv"><h2>Status & trust.</h2><p class="lead">No fake counters. Live numbers appear here only when the API is connected.</p></div><div class="g3 rv"><div class="card"><h3>Status</h3><p>Uptime and incident history will be public when the bot is deployed.</p></div><div class="card"><h3>Permissions</h3><p>Grant only what you use: Manage Messages, Kick, Ban, Timeout, Manage Channels and Roles. Least privilege is enforced before every action.</p></div><div class="card"><h3>Privacy</h3><p>Stores only what features need: guild settings, warnings and cases. No message content sold or shared. Contact support to delete your data.</p></div></div></div></section>
+
+<section id="documentation"><div class="w"><div class="band rv"><h2>Need more control?</h2><p class="lead">Explore the documentation and learn everything about the bot.</p><a class="btn p lg" href="#commands">View Documentation</a></div></div></section>
+
+<section id="faq"><div class="w" style="max-width:800px"><div class="head rv"><h2>Questions, answered.</h2></div><div class="rv" id="fq"></div></div></section>
+
+<section><div class="w"><div class="band rv"><h2>Ready to upgrade your server?</h2><p class="lead">Add the bot in a few clicks, then configure it from the dashboard.</p><div class="cta" style="justify-content:center"><a class="btn p lg" href="<%= inviteUrl %>">Add to Discord</a><a class="btn lg" href="/dashboard">Open Dashboard</a></div></div></div></section>
+</main>
+
+<footer><div class="w"><div class="fg">
+<div><a class="brand" href="#home" style="padding:0"><img src="<%= VLOGO %>" alt="Vela bot logo" width="32" height="32"><span class="bn" style="color:var(--tx)">Vela</span></a><p>Powerful tools to manage, protect and grow your Discord community.</p></div>
+<div><h5>Product</h5><a href="#features">Features</a><a href="#commands">Commands</a><a href="#dashboard">Dashboard</a><a href="#pricing">Pricing</a><a href="#status">Status</a></div>
+<div><h5>Resources</h5><a href="#documentation">Documentation</a><a href="#faq">FAQ</a></div>
+<div><h5>Legal</h5><a href="#status">Privacy</a><a href="#status">Terms</a></div></div>
+<p class="copy">© 2026 Vela. Not affiliated with Discord Inc.</p></div></footer>
+
+<script>
+/* ===== CONFIG: replace with real values ===== */
+const CFG={name:"Vela",invite:"<%= inviteUrl %>",login:"/auth/discord",dashboard:"/dashboard",docs:"#",support:"#"};
+/* Command registry: the bot's real slash commands */
+const COMMANDS=<%- JSON.stringify(commands) %>;
+const P={shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',bolt:'<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',hand:'<path d="M12 21s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 11c0 5.500-7 10-7 10z"/>',bot:'<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 14h.01M15 14h.01"/>',list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',tick:'<path d="M4 8h16v8H4zM9 8v8"/>',tag:'<path d="M20 12l-8 8-9-9V3h8z"/>',code:'<path d="M8 8l-5 4 5 4M16 8l5 4-5 4"/>',gift:'<path d="M3 9h18v4H3zM5 13v8h14v-8M12 9v12M12 9c-3 0-4-4-1-4 2 0 1 4 1 4zm0 0c3 0 4-4 1-4-2 0-1 4-1 4z"/>',lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>'};
+const ic=k=>`<span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">${P[k]}</svg></span>`;
+const $=s=>document.querySelector(s);
+document.querySelectorAll(".bn").forEach(e=>e.textContent=CFG.name);
+const nav=[["Home","#home"],["Features","#features"],["Commands","#commands"],["Pricing","#pricing"],["Status","#status"],["Docs","#documentation"]];
+$("#links").innerHTML=nav.map(n=>`<a href="${n[1]}">${n[0]}</a>`).join("");
+$("#dr").innerHTML=nav.map(n=>`<a href="${n[1]}">${n[0]}</a>`).join("")+`<a class="btn" href="${CFG.login}">Login with Discord</a><a class="btn p" href="${CFG.invite}">Add to Discord</a>`;
+document.querySelectorAll('a.btn.p[href="#"]').forEach(a=>{if(/Add to/.test(a.textContent))a.href=CFG.invite});
+$("#quick").innerHTML=[["bolt","Fast"],["shield","Secure"],["gear","Powerful"],["chart","Dynamic dashboard"]].map(x=>`<div>${ic(x[0])}${x[1]}</div>`).join("");
+const F=[["shield","Moderation","Warnings, timeouts, bans and message cleanup with reasons logged."],["hand","Welcome & Goodbye","Greet new members and say goodbye with live preview."],["bot","Auto Moderation","Detect spam, links and invites. Monitor-only before enforcing."],["list","Logging","Track edits, deletes, joins, roles and voice in one channel."],["tick","Tickets","Organized support with transcripts and per-member limits."],["lock","Security","Anti-raid checks, permission verification and audit log."]];
+$("#fg").innerHTML=F.map(f=>`<div class="card">${ic(f[0])}<h3>${f[1]}</h3><p>${f[2]}</p></div>`).join("");
+$("#sg").innerHTML=[["lock","Permission checks","Actions verify who is allowed to run them."],["shield","Secure authentication","Sign in with Discord OAuth."],["gear","Rate limiting","Limits protect the bot and dashboard from abuse."],["list","Audit logs","Review important changes made to settings."],["code","Protected APIs","Dashboard requests require authentication."]].map(f=>`<div class="card">${ic(f[0])}<h3>${f[1]}</h3><p>${f[2]}</p></div>`).join("");
+$("#st").innerHTML=["Add the bot","Login with Discord","Select your server","Configure your settings","You're ready"].map(s=>`<div class="step">${s}</div>`).join("");
+$("#cm").innerHTML=COMMANDS.map(c=>`<div class="cmd"><code>${c[0]}</code><span>${c[1]}</span></div>`).join("");
+$("#fq").innerHTML=[["How do I add the bot?","Click Add to Discord, choose your server and approve only the permissions you need."],["How do I configure my server?","Log in to the dashboard, select your server and change its settings. Use search (Ctrl+K) if you cannot find an option."],["Does the bot require Administrator?","No. Grant only the permissions the features you use need. See the Status section for the list."],["How does the dashboard work?","You sign in with Discord and manage only the servers where you have Manage Server permission."],["Can I remove the bot?","Yes. Kick it from your server at any time. Ask support to delete stored settings."],["How do I get support?","Use the Support link in the footer. Real response times will be published with the status page."],["Is my data safe?","The bot stores only guild settings, warnings and cases. See the Privacy card above. No data is sold."]].map(q=>`<details><summary>${q[0]}</summary><p>${q[1]}</p></details>`).join("");
+/* dashboard preview */
+const bars=[40,65,50,80,60,90,70].map(h=>`<i style="height:${h}%"></i>`).join("");
+const tg=(l,on)=>`<div class="row"><span>${l}</span><button type="button" class="tg${on?"":" off"}" role="switch" aria-checked="${on}" aria-label="${l}" disabled></button></div>`;
+const D={Overview:`<h4>Overview</h4><small>Server summary</small><div class="stats"><div class="stat"><em>Members</em><b>—</b></div><div class="stat"><em>Actions</em><b>—</b></div><div class="stat"><em>Tickets</em><b>—</b></div></div><div class="bars">${bars}</div>`,
+Statistics:`<h4>Statistics</h4><small>Activity over time</small><div class="bars" style="height:160px;margin-top:16px">${bars}${bars}</div>`,
+Welcome:`<h4>Welcome</h4><small>Greet new members</small>${tg("Enable welcome message",1)}${tg("Send image",0)}${tg("Goodbye message",1)}`,
+Moderation:`<h4>Moderation</h4><small>Rules and automation</small>${tg("Automod",1)}${tg("Log moderation actions",1)}${tg("Warn before timeout",0)}`,
+Settings:`<h4>Settings</h4><small>General options</small>${tg("Language",1)}${tg("Slash commands only",0)}`};
+const dash=$("[data-dash]"),side=dash.querySelector(".side"),panes=dash.querySelector(".panes");
+Object.keys(D).forEach((k,i)=>{const b=document.createElement("button");b.className="tab";b.role="tab";b.textContent=k;b.setAttribute("aria-selected",i==0);b.onclick=()=>sel(k);side.appendChild(b);const p=document.createElement("div");p.className="pane"+(i?"":" o");p.dataset.k=k;p.role="tabpanel";p.innerHTML=D[k];panes.appendChild(p)});
+function sel(k){side.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.textContent==k));panes.querySelectorAll(".pane").forEach(p=>p.classList.toggle("o",p.dataset.k==k))}
+$("#preview .frame").id="dashboard";
+/* moderation preview */
+$("[data-mod]").innerHTML=[["Warn","Member warned, 2 of 3"],["Timeout","10 minutes"],["Ban","Reason required"],["Clear","Delete last 50 messages"]].map(r=>`<div class="row"><span><b>${r[0]}</b><br><small style="color:var(--mut)">${r[1]}</small></span><span class="btn" style="padding:6px 12px;font-size:.78rem">Apply</span></div>`).join("");
+/* welcome preview */
+const wm=$("#wm"),vs=["{user}","{server}","{count}"];
+const upd=()=>{$("#pv").textContent=wm.value.replace(/{user}/g,"@NewMember").replace(/{server}/g,"Your Server").replace(/{count}/g,"1");$("#pc").textContent=$("#wch").value;$("#pn").textContent=CFG.name};
+$("#vars").innerHTML=vs.map(v=>`<code tabindex="0" role="button">${v}</code>`).join("");
+document.querySelectorAll("#vars code").forEach(c=>{const f=()=>{wm.value+=" "+c.textContent;upd()};c.onclick=f;c.onkeydown=e=>{if(e.key=="Enter"||e.key==" "){e.preventDefault();f()}}});
+wm.oninput=upd;$("#wch").oninput=upd;upd();
+/* nav */
+const n=$("#nav");const sc=()=>n.classList.toggle("s",scrollY>10);sc();addEventListener("scroll",sc,{passive:true});
+const dr=$("#dr"),scrim=$("#sc"),mb=$("#mb");
+const tgl=o=>{dr.classList.toggle("o",o);scrim.classList.toggle("o",o);mb.setAttribute("aria-expanded",o)};
+mb.onclick=()=>tgl(!dr.classList.contains("o"));scrim.onclick=()=>tgl(0);dr.onclick=e=>{if(e.target.tagName=="A")tgl(0)};addEventListener("keydown",e=>{if(e.key=="Escape")tgl(0)});
+/* reveal */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll(".rv").forEach(e=>io.observe(e));
+/* loader */
+(()=>{const ld=$("#ld"),lb=$("#lb"),lp=$("#lp"),t0=performance.now();ld.querySelector("img").src="<%= VLOGO %>";
+let ok=document.readyState=="complete",d=0;const rm=matchMedia("(prefers-reduced-motion:reduce)").matches;
+const set=v=>{lp.textContent=Math.round(v)+"%";lb.style.transform="scaleX("+v/100+")";ld.setAttribute("aria-valuenow",Math.round(v))};
+const hide=()=>{ld.classList.add("x");document.body.classList.remove("ld");setTimeout(()=>ld.remove(),600)};
+if(!ok)addEventListener("load",()=>ok=true);setTimeout(()=>ok=true,4000);
+if(rm){set(100);hide();return}
+const tick=n=>{const g=Math.min((n-t0)/1500*100,ok?100:92);d+=(g-d)*.25;if(ok&&d>99.5)d=100;set(d);d<100?requestAnimationFrame(tick):setTimeout(hide,250)};
+requestAnimationFrame(tick)})();
+</script>
+</body>
+</html>

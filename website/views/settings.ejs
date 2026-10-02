@@ -1,0 +1,9 @@
+<%- include('partials/head') %>
+<%- include('partials/sidebar') %>
+<div class="ph"><h1><%= title %></h1><p>General bot options. Full editor lives in the new dashboard.</p></div>
+<div class="card"><h2>General</h2>
+<div class="row"><div><span class="lb">Language</span><small>Default language</small></div><span class="pill"><%= (typeof settings !== 'undefined' && settings && settings.defaultLanguage) || 'en' %></span></div>
+<div class="row"><div><span class="lb">Prefix</span></div><span class="pill"><%= (typeof settings !== 'undefined' && settings && settings.defaultPrefix) || '!' %></span></div>
+</div>
+<div class="card"><div class="row"><div><span class="lb">Edit in new dashboard</span><small>Settings tab</small></div><a class="btn p" href="/dashboard#settings">Open</a></div></div>
+<%- include('partials/foot') %>

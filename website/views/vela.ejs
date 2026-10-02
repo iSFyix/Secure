@@ -1,0 +1,1210 @@
+<% const VLOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23000'/%3E%3Ccircle cx='32' cy='32' r='29' fill='none' stroke='%23c9ccd4' stroke-width='2'/%3E%3Ctext x='32' y='44' font-size='30' text-anchor='middle' fill='%23f2f2f5' font-family='sans-serif' font-weight='bold'%3EV%3C/text%3E%3C/svg%3E"; %>
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="brand">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dashboard — Vela</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="<%= VLOGO %>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#0e1013;--bg2:#14171c;--bg3:#1a1e25;--line:#262b34;--tx:#e9ebef;--mut:#98a0ae;--acc:#a9b9d8;--glow:rgba(169,185,216,.14);--ok:#9bd0b0;color-scheme:dark}
+:root[data-theme=light]{--bg:#f3f4f6;--bg2:#fff;--bg3:#eceef2;--line:#d8dce3;--tx:#12151a;--mut:#5b6472;--acc:#4a5f8c;--glow:rgba(74,95,140,.12);--ok:#2f7a4f;color-scheme:light}
+@media(prefers-color-scheme:light){:root:not([data-theme=dark]){--bg:#f3f4f6;--bg2:#fff;--bg3:#eceef2;--line:#d8dce3;--tx:#12151a;--mut:#5b6472;--acc:#4a5f8c;--glow:rgba(74,95,140,.12);--ok:#2f7a4f;color-scheme:light}}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font:400 15px/1.55 Sora,system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;background:var(--bg);color:var(--tx)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:6px}
+/* Professional themed scrollbars instead of the plain-white native bar */
+*{scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--acc),var(--line));border-radius:99px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:var(--acc)}
+.side::-webkit-scrollbar-thumb{border-color:var(--bg2)}
+.pal-list::-webkit-scrollbar-thumb,.dd-list::-webkit-scrollbar-thumb{border-color:var(--bg2)}
+/* Collapsible sidebar without any visible scrollbar */
+.app{transition:grid-template-columns .25s ease}
+.side{min-width:0;scrollbar-width:none;-ms-overflow-style:none;transition:opacity .2s,visibility .25s,padding .25s}
+.side::-webkit-scrollbar{display:none;width:0;height:0}
+.dsk{display:inline-flex}
+@media(min-width:861px){
+.app.closed{grid-template-columns:0 1fr}
+.app.closed .side{padding-left:0;padding-right:0;border-right:0;overflow:hidden;opacity:0;visibility:hidden;transition:opacity .2s,visibility .25s,padding .25s}
+.app.closed .bar{left:0}
+}
+@media(max-width:860px){.dsk{display:none}}
+h1{font-size:1.5rem;letter-spacing:-.02em;font-weight:600}h2{font-size:1rem;font-weight:600}
+.app{display:grid;grid-template-columns:250px 1fr;height:100%}
+.side{background:var(--bg2);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:16px 12px;gap:4px;overflow-y:auto}
+.brand{display:flex;gap:10px;align-items:center;font-weight:700;padding:4px 8px 14px}
+.brand img{width:30px;height:30px;border-radius:50%}
+.srv{display:flex;gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);margin-bottom:10px;font-size:.85rem;width:100%;color:var(--tx);font-family:inherit;cursor:pointer}
+.srv b{width:28px;height:28px;border-radius:8px;background:var(--bg3);display:grid;place-items:center;font-size:.75rem}
+.srv span{flex:1;text-align:left}
+.srv img{width:28px;height:28px;border-radius:8px}
+.nv{all:unset;box-sizing:border-box;display:flex;gap:10px;align-items:center;padding:9px 10px;border-radius:9px;color:var(--mut);font-size:.88rem;cursor:pointer;transition:background .15s,color .15s}
+.nv:hover{background:var(--bg3);color:var(--tx)}
+.nv[aria-current=page]{background:var(--bg3);color:var(--tx);box-shadow:inset 2px 0 var(--acc)}
+.nv svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.grow{flex:1}
+.main{display:flex;flex-direction:column;min-width:0;height:100%;overflow:hidden}
+.top{display:flex;align-items:center;gap:12px;padding:12px 24px;border-bottom:1px solid var(--line);background:var(--bg);min-height:60px}
+.top .grow{color:var(--mut);font-size:.85rem}
+.menu{display:none}
+.usr{display:flex;gap:8px;align-items:center;font-size:.85rem}
+.usr i{width:28px;height:28px;border-radius:50%;background:var(--bg3);border:1px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:.7rem}
+.usr img{width:28px;height:28px;border-radius:50%}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 16px;border-radius:9px;font:600 .85rem Sora,sans-serif;border:1px solid var(--line);background:var(--bg2);color:var(--tx);cursor:pointer;transition:border-color .15s,transform .15s}
+.btn:hover{border-color:var(--acc)}.btn:active{transform:translateY(1px)}
+.btn.p{background:linear-gradient(180deg,var(--btn-hi,#f2f4f8),var(--btn-lo,#b9c0cc));color:var(--color-primary-content,#0e1013);border-color:transparent}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.body{flex:1;overflow-y:auto;padding:28px 24px 100px}
+.wrap{max-width:860px;margin:0 auto}
+.ph{margin-bottom:22px}.ph p{color:var(--mut);margin-top:4px}
+.banner{border:1px solid var(--line);background:var(--bg2);border-radius:10px;padding:10px 14px;font-size:.82rem;color:var(--mut);margin-bottom:20px}
+.card{border:1px solid var(--line);border-radius:14px;background:var(--bg2);padding:6px 22px;margin-bottom:16px}
+.card>h2{padding:16px 0 4px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}
+.row label,.row .lb{display:block;font-weight:500;font-size:.92rem}
+.row small{display:block;color:var(--mut);font-size:.8rem;margin-top:2px}
+.sw{width:46px;height:26px;min-width:44px;min-height:26px;border-radius:99px;background:var(--line);border:0;position:relative;cursor:pointer;flex:none;transition:background .2s;padding:0;font-family:inherit}
+.sw:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--mut);transition:transform .2s,background .2s}
+.sw[aria-checked=true]{background:var(--acc)}.sw[aria-checked=true]:after{transform:translateX(20px);background:var(--bg)}
+.sw[aria-disabled=true]{opacity:.6;cursor:wait}
+.sw-w{display:flex;align-items:center;gap:10px;flex:none}
+.sw-st{font-size:.78rem;color:var(--mut);min-width:64px;text-align:end}
+[dir=rtl] .sw-st{text-align:start}
+/* Guide: progressive disclosure (grid animation, no height anim) + health + palette */
+.adv{border-top:1px dashed var(--line);margin-top:4px}
+.adv>button{all:unset;box-sizing:border-box;display:flex;width:100%;justify-content:space-between;align-items:center;padding:12px 0;cursor:pointer;font-size:.85rem;color:var(--mut);min-height:44px}
+.adv>button:hover{color:var(--tx)}
+.adv-body{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .3s cubic-bezier(.4,0,.2,1),opacity .25s ease}
+.adv.open .adv-body{grid-template-rows:1fr;opacity:1}
+.adv-body>div{overflow:hidden;min-height:0}
+/* Guide: module headers with master switch; body opens with animation on enable */
+.mod-h{display:flex;align-items:center;gap:12px;padding:14px 0}
+.mod-h .ic{width:34px;height:34px;flex:none;border-radius:9px;background:var(--bg3);border:1px solid var(--line);display:grid;place-items:center;color:var(--acc)}
+.mod-h .ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.mod-h b{display:block;font-size:.92rem}
+.mod-h small{display:block;color:var(--mut);font-size:.78rem;margin-top:2px}
+.mod-b{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .3s cubic-bezier(.4,0,.2,1),opacity .25s ease}
+.card.open .mod-b{grid-template-rows:1fr;opacity:1}
+.mod-b>div{overflow:hidden;min-height:0}
+.health{border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:.82rem;color:var(--mut);margin:0 0 12px;background:var(--bg)}
+.pal{position:fixed;inset:0;z-index:80;display:none;place-items:start center;padding:12vh 16px 16px;background:rgba(0,0,0,.5)}
+.pal.o{display:grid}
+.pal-box{width:min(560px,100%);background:var(--bg2);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.pal-box input{width:100%;padding:14px 16px;background:transparent;border:0;color:var(--tx);font:inherit;font-size:.95rem}
+.pal-list{max-height:320px;overflow:auto;padding:6px}
+.pal-list button{all:unset;box-sizing:border-box;display:flex;width:100%;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:8px;cursor:pointer;font-size:.86rem;min-height:44px;align-items:center}
+.pal-list button:hover,.pal-list button[aria-selected=true]{background:var(--bg3)}
+.pal-list small{color:var(--mut)}
+.in,.card textarea,.card select{width:min(280px,100%);padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--tx);font:inherit;font-size:.88rem}
+.card textarea{width:100%;resize:vertical;min-height:84px}
+.stack{display:block}.stack .in,.stack textarea{margin-top:8px;width:100%}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+.stat{border:1px solid var(--line);border-radius:14px;background:var(--bg2);padding:18px}
+.stat em{font-style:normal;color:var(--mut);font-size:.8rem}.stat b{display:block;font-size:1.6rem;margin-top:4px;color:var(--mut)}
+.empty{padding:28px 0;color:var(--mut);text-align:center;font-size:.9rem}
+.qa{display:flex;flex-wrap:wrap;gap:10px;padding:14px 0 18px}
+.loggrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:14px 0 18px}
+.logsq{border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:14px;display:flex;flex-direction:column;gap:10px;aspect-ratio:1/1;min-width:0;min-height:0;overflow:hidden}
+.logsq:hover{border-color:var(--acc)}
+.logsq .lh{display:flex;align-items:center;gap:8px}
+.logsq .dot{width:12px;height:12px;border-radius:4px;flex:none;border:1px solid var(--line)}
+.logsq .lb{font-weight:600;font-size:.86rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.logsq select{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg2);color:var(--tx);font:inherit;font-size:.82rem;cursor:pointer}
+.logsq .lf{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto}
+.logsq .lc{display:flex;align-items:center;gap:6px;color:var(--mut);font-size:.75rem}
+.logsq input[type=color]{width:30px;height:24px;padding:0;border:1px solid var(--line);border-radius:6px;background:var(--bg2);cursor:pointer}
+.logsq input[type=color]::-webkit-color-swatch-wrapper{padding:2px}
+.logsq input[type=color]::-webkit-color-swatch{border:0;border-radius:4px}
+/* Logging: smart filter tabs + event cards + Manage modal */
+.logtabs{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 14px;scrollbar-width:thin}
+.logtab{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);color:var(--mut);font-size:.83rem;white-space:nowrap;cursor:pointer;min-height:40px}
+.logtab:hover{color:var(--tx);border-color:var(--acc)}
+.logtab[aria-pressed=true]{background:var(--bg3);color:var(--tx);border-color:var(--acc)}
+.logtab svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.logtab .cnt{font-size:.75rem;color:var(--mut);font-variant-numeric:tabular-nums}
+.logtab[aria-pressed=true] .cnt{color:var(--acc)}
+.logcards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding-bottom:18px}
+.logcard{border:1px solid var(--line);border-radius:12px;background:var(--bg2);padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.logcard:hover{border-color:var(--acc)}
+.logcard[hidden]{display:none}
+.logcard .lc-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.logcard .lic{width:32px;height:32px;border-radius:9px;background:var(--bg3);border:1px solid var(--line);display:grid;place-items:center;color:var(--acc);flex:none}
+.logcard .lic svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.logcard b{font-size:.88rem}
+.logcard small{color:var(--mut);font-size:.78rem;line-height:1.45;flex:1}
+/* Security cards: fixed size, never expand */
+.logcard{min-height:238px}
+.logcard b{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.logcard small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.logcard .lmanage[disabled]{opacity:.4;cursor:not-allowed}
+.logcard .lmanage[disabled]:hover{color:var(--mut)}
+/* Reusable security modal: same radius/style as cards */
+.sm-h{display:flex;gap:10px;align-items:center;padding:16px 0 4px}
+.sm-h .sic{width:34px;height:34px;flex:none;border-radius:9px;background:var(--bg3);border:1px solid var(--line);display:grid;place-items:center;color:var(--acc)}
+.sm-h .sic svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.sm-h h2{padding:0;font-size:1rem;flex:1}
+.sm-h .chipx{width:26px;height:26px;font-size:.9rem;flex:none}
+.blink{all:unset;color:var(--acc);cursor:pointer;font-size:.82rem;padding:8px 4px}
+.blink:hover{text-decoration:underline}
+.movl{animation:fadeIn .2s ease}
+.mobox{animation:popIn .22s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes popIn{from{opacity:0;transform:scale(.96) translateY(8px)}}
+@media(max-width:640px){.movl{place-items:end center;padding:0}.mobox{width:100%;border-radius:16px 16px 0 0;max-height:92vh}.logcard{min-height:0}}
+.logcard .lmanage{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);padding-top:12px;margin-top:4px;color:var(--mut);font-size:.82rem;cursor:pointer;min-height:36px}
+.logcard .lmanage:hover{color:var(--tx)}
+.logcard .lmanage svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.lm-color-wrap{display:flex;align-items:center;gap:10px}
+.lm-color-wrap input[type=color]{width:40px;height:32px;padding:2px;border:1px solid var(--line);border-radius:8px;background:var(--bg);cursor:pointer}
+.lm-color-wrap code{font:600 .85rem ui-monospace,Menlo,monospace;color:var(--tx)}
+@media(max-width:1100px){.logcards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.logcards{grid-template-columns:1fr}}
+/* Overview: Server Statistics cards + Server Analytics panels */
+.sech{font-size:1rem;margin:20px 0 12px}
+.sstats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:6px}
+.sstat{border:1px solid var(--line);border-radius:14px;background:var(--bg2);padding:16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.sstat:hover{border-color:var(--acc)}
+.sstat .sic{width:32px;height:32px;border-radius:9px;background:var(--bg3);border:1px solid var(--line);display:grid;place-items:center;color:var(--acc)}
+.sstat .sic svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.sstat em{font-style:normal;color:var(--mut);font-size:.78rem}
+.sstat b{font-size:1.6rem;font-weight:700;font-variant-numeric:tabular-nums}
+.sstat small{color:var(--mut);font-size:.75rem}
+.ana-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin:20px 0 4px}
+.ana-head h2{font-size:1rem}
+.ana-head p{color:var(--mut);font-size:.82rem;margin-top:2px}
+.ana-ctl{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ana-ctl .in{width:auto;min-width:120px}
+.anagrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:10px 0 18px}
+.apanel{border:1px solid var(--line);border-radius:12px;background:var(--bg2);padding:16px;min-width:0}
+.apanel:hover{border-color:var(--acc)}
+.apanel.wide{grid-column:1/-1}
+.ap-h{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.ap-h .adot{width:28px;height:28px;flex:none;border-radius:8px;background:var(--bg3);border:1px solid var(--line);display:grid;place-items:center;color:var(--d,var(--acc))}
+.ap-h .adot svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ap-h b{display:block;font-size:.88rem}
+.ap-h small{display:block;color:var(--mut);font-size:.76rem;margin-top:2px}
+.ap-h .delta{display:block;color:var(--acc);font-size:.75rem;margin-top:4px}
+.abars{display:flex;gap:5px;align-items:flex-end;height:110px;border:1px solid var(--line);border-radius:10px;padding:12px 12px 8px;background:var(--bg)}
+.abar{flex:1;min-width:0;background:linear-gradient(var(--acc),transparent);opacity:.75;border-radius:4px 4px 0 0}
+.agroup{flex:1;min-width:0;display:flex;gap:3px;align-items:flex-end;height:100%}
+.agroup i{flex:1;border-radius:4px 4px 0 0;min-height:3px}
+.agroup .aj{background:var(--acc);opacity:.85}
+.agroup .al{background:var(--er,#e5a3a3);opacity:.8}
+.ax{display:flex;gap:5px;margin-top:6px}
+.ax span{flex:1;min-width:0;text-align:center;color:var(--mut);font-size:.68rem;white-space:nowrap;overflow:hidden}
+.alegend{display:flex;gap:6px;align-items:center;color:var(--mut);font-size:.75rem;margin-top:8px}
+.alegend i{width:10px;height:10px;border-radius:3px}
+.alegend .dotj{background:var(--acc)}
+.alegend .dotl{background:var(--er,#e5a3a3)}
+.aempty{text-align:center;color:var(--mut);padding:26px 10px}
+.aempty svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.5;opacity:.6}
+.aempty b{display:block;margin-top:8px;font-size:.86rem;color:var(--tx)}
+.aempty p{font-size:.76rem;margin-top:4px}
+.prem{text-align:center;padding:24px 12px;display:grid;justify-items:center;gap:8px}
+.prem .crown{width:34px;height:34px;color:#e5c07b}
+.prem .crown svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.prem b{font-size:.86rem}
+.prem p{color:var(--mut);font-size:.78rem;max-width:340px}
+.arow{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.arow:last-child{border:0}
+.arow .aav{width:30px;height:30px;flex:none;border-radius:50%;background:var(--bg3);border:1px solid var(--line);display:grid;place-items:center;font-size:.75rem;font-weight:700}
+.arow .anm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.86rem}
+.arow small{color:var(--mut);font-size:.75rem;white-space:nowrap}
+.mblist{display:grid;gap:10px;padding:6px 0}
+.mbrow{display:flex;gap:10px;align-items:center}
+.mbrow .mbt{width:110px;flex:none;font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mbrow .mbb{flex:1;height:10px;border-radius:99px;background:var(--bg3);border:1px solid var(--line);overflow:hidden}
+.mbrow .mbb i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),transparent);border-radius:99px}
+.mbrow b{width:56px;flex:none;text-align:end;font-size:.85rem;font-variant-numeric:tabular-nums}
+@media(max-width:1100px){.sstats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:860px){.anagrid{grid-template-columns:1fr}.sstats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.sstats{grid-template-columns:repeat(2,1fr)}.ana-head{flex-direction:column;align-items:stretch}.body{padding:20px 14px 90px}.top{gap:8px;padding:12px}.top .grow{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#kp{display:none}.sstat{padding:14px}.sstat b{font-size:1.3rem}.arow{flex-wrap:wrap}.arow small{white-space:normal}.mbrow .mbt{width:88px}.tkt th,.tkt td{padding:8px 4px;font-size:.8rem}.mobox{padding:6px 14px 16px}}
+.vars{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.vars button{font:500 .75rem ui-monospace,Menlo,monospace;padding:3px 9px;border-radius:6px;background:var(--bg3);border:1px solid var(--line);color:var(--acc);cursor:pointer}
+.wp{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--bg);display:flex;gap:12px;margin:14px 0 18px}
+.wp>img{width:38px;height:38px;border-radius:50%;flex:none}.wp p{color:var(--mut);font-size:.88rem;white-space:pre-wrap;word-break:break-word}
+.bar{position:fixed;left:250px;right:0;bottom:16px;display:flex;justify-content:center;pointer-events:none;padding:0 16px;transform:translateY(120%);transition:transform .25s}
+.bar.o{transform:none}
+.bar div{pointer-events:auto;display:flex;gap:12px;align-items:center;padding:10px 12px 10px 18px;border:1px solid var(--line);border-radius:12px;background:var(--bg2);box-shadow:0 12px 40px rgba(0,0,0,.35);font-size:.85rem}
+.toast{position:fixed;top:16px;right:16px;padding:10px 16px;border-radius:10px;background:var(--bg2);border:1px solid var(--ok);color:var(--ok);font-size:.85rem;opacity:0;transform:translateY(-8px);transition:.25s;pointer-events:none;z-index:70}
+.toast.o{opacity:1;transform:none}
+.toast.err{border-color:var(--er,#e5a3a3);color:var(--er,#e5a3a3)}
+.tkt{width:100%;border-collapse:collapse;font-size:.86rem;margin:6px 0 12px}
+.tkt th,.tkt td{text-align:start;padding:10px 8px;border-bottom:1px solid var(--line)}
+.tkt th{color:var(--mut);font-weight:500;font-size:.78rem}
+.gh{font-size:.74rem;color:var(--mut);padding:14px 10px 4px;opacity:.85}
+.movl{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:rgba(0,0,0,.55);padding:16px}
+.movl[hidden]{display:none}
+.mobox{width:min(560px,100%);max-height:88vh;overflow-y:auto;border:1px solid var(--line);border-radius:14px;background:var(--bg2);padding:6px 22px 18px}
+.mobox>h2{padding:16px 0 4px}
+.mobox textarea{width:100%;margin-top:8px;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--tx);font:inherit;font-size:.88rem;resize:vertical;min-height:56px}
+.rlist{max-height:150px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin-top:8px;display:grid;gap:6px;background:var(--bg)}
+.rlist label{display:flex;gap:8px;align-items:center;font-size:.85rem;cursor:pointer}
+.dd{position:relative}
+.dd-btn{width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:pointer;text-align:start}
+.dd-n{color:var(--mut);font-size:.78rem;flex:none}
+.dd-panel{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:90;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px;box-shadow:0 12px 40px rgba(0,0,0,.45)}
+.dd-panel[hidden]{display:none}
+.dd-search{width:100%;margin-bottom:8px}
+.dd-list{max-height:160px;overflow-y:auto;display:grid;gap:6px}
+.dd-list label{display:flex;gap:8px;align-items:center;font-size:.85rem;cursor:pointer}
+.morow{display:flex;gap:10px;justify-content:flex-end;padding-top:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:4px 6px 4px 12px;border-radius:99px;background:var(--bg3);border:1px solid var(--line);font-size:.82rem}
+.chipx{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;border:1px solid var(--line);background:var(--bg2);color:var(--mut);cursor:pointer;font-size:.75rem;line-height:1;padding:0;font-family:inherit}
+.chipx:hover{border-color:var(--acc);color:var(--tx)}
+#ceAliases{width:100%}
+.chip-empty{color:var(--mut);font-size:.82rem}
+/* Templates: browse/builder tabs, filters, cards, confirm */
+.tabs{display:flex;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:4px;margin:0 0 14px}
+.tabs button{all:unset;box-sizing:border-box;flex:1;text-align:center;padding:8px 10px;border-radius:7px;cursor:pointer;color:var(--mut);font-size:.85rem;min-height:38px}
+.tabs button[aria-selected=true]{background:var(--bg3);color:var(--tx)}
+.tpl-tools{display:grid;gap:10px;margin-bottom:6px}
+.tpl-tools input[type=search]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--tx);font:inherit;font-size:.88rem}
+.fchips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.fchip{all:unset;box-sizing:border-box;padding:7px 14px;border:1px solid var(--line);border-radius:99px;font-size:.8rem;color:var(--mut);background:var(--bg2);cursor:pointer;min-height:36px}
+.fchip[aria-pressed=true]{border-color:var(--acc);color:var(--tx)}
+.fchip:hover{color:var(--tx)}
+.tpl-tier{margin-left:auto;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg2);color:var(--tx);font:inherit;font-size:.82rem;cursor:pointer}
+.tpl-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+@media(max-width:640px){.tpl-grid{grid-template-columns:1fr}}
+.tpl{border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:16px;display:flex;flex-direction:column;gap:6px}
+.tpl:hover{border-color:var(--acc)}
+.tpl b{font-size:.92rem}
+.tpl small{color:var(--mut);font-size:.78rem}
+.tpl-meta{color:var(--mut);font-size:.75rem}
+.tpl-ft{margin-top:8px;padding-top:10px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}
+.tpl-empty{border:1.5px dashed var(--line);border-radius:12px;padding:36px 20px;text-align:center;color:var(--mut);margin-top:12px}
+.tpl-empty b{display:block;color:var(--tx);margin:10px 0 4px}
+.warnbox{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:14px 16px;font-size:.85rem;color:var(--mut);margin:12px 0}
+.warnbox b{color:var(--tx)}
+.im{width:100%;margin-top:8px;display:grid;gap:10px}
+.dz{border:1.5px dashed var(--line);border-radius:10px;padding:22px;text-align:center;color:var(--mut);font-size:.85rem;cursor:pointer;transition:border-color .15s,background .15s}
+.dz:hover,.dz.on{border-color:var(--acc);background:var(--bg3);color:var(--tx)}
+.th{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.th img{max-width:180px;max-height:110px;border-radius:8px;border:1px solid var(--line)}
+.er{color:var(--er,#e5a3a3);font-size:.8rem}.er:empty{display:none}
+.pl{display:block;color:var(--mut);margin:10px 0 4px}
+.pimg{display:block;max-width:100%;max-height:220px;border-radius:8px;margin-top:8px}
+.pi:empty{display:none}
+select.in,.card select{cursor:pointer}
+.cv{position:relative;container-type:inline-size;aspect-ratio:800/350;border-radius:10px;overflow:hidden;margin-top:10px;border:1px dashed var(--line);background:transparent;max-width:420px}
+.cv.noimg{background:transparent;background-image:none}
+.cv.noimg .cbg{display:none}
+.cv[hidden]{display:none}
+.cbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.nm{position:absolute;transform:translate(-50%,-50%);padding:.15em .5em;font-weight:700;font-size:calc(var(--s,7)*1cqw);line-height:1.2;color:#fff;border:1.5px dashed var(--acc);border-radius:4px;cursor:move;white-space:nowrap;touch-action:none;user-select:none}
+.nm:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.h{position:absolute;width:10px;height:10px;background:var(--acc);border:1.5px solid var(--color-primary-content,#0e1013);border-radius:2px;touch-action:none;opacity:0;pointer-events:none}
+.h[data-h=nw]{left:-6px;top:-6px;cursor:nwse-resize}.h[data-h=ne]{right:-6px;top:-6px;cursor:nesw-resize}.h[data-h=sw]{left:-6px;bottom:-6px;cursor:nesw-resize}.h[data-h=se]{right:-6px;bottom:-6px;cursor:nwse-resize}
+.pb{flex:1;min-width:0}.ce{color:var(--er,#e5a3a3);font-size:.8rem;display:block}.ce:empty{display:none}
+.rl{align-self:flex-start}
+.el[hidden]{display:none}
+.am{position:absolute;transform:translate(-50%,-50%);width:calc(var(--s,20)*1cqw);aspect-ratio:1;border-radius:50%;border:1.5px dashed var(--acc);cursor:move;touch-action:none;user-select:none}
+.am:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.ai{position:absolute;inset:0;border-radius:50%;overflow:hidden;background:linear-gradient(var(--ai-1,#3a4150),var(--ai-2,#1d2129));display:grid;place-items:center;pointer-events:none}
+.ai svg{display:block}
+.scrim{display:none}
+@media(max-width:860px){.app{grid-template-columns:1fr}.side{position:fixed;inset:0 auto 0 0;width:270px;z-index:60;transform:translateX(-100%);transition:transform .25s;visibility:hidden}.side.o{transform:none;visibility:visible}.scrim.o{display:block;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:55}.menu{display:inline-flex}.bar{left:0}.stats{grid-template-columns:1fr}.row{flex-direction:column;align-items:stretch}.row .sw{align-self:flex-start}.in,.card select{width:100%}.usr span{display:none}}
+@media(max-width:640px){.loggrid{grid-template-columns:1fr}.logsq{aspect-ratio:auto}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}}
+</style>
+<link rel="stylesheet" href="/css/brand-theme.css">
+</head>
+<body>
+<div class="app">
+<aside class="side" id="side" aria-label="Dashboard navigation">
+<a class="brand" href="/dashboard"><img src="<%= VLOGO %>" alt="Vela logo" width="30" height="30">Vela</a>
+<button class="srv" id="srvBtn" aria-label="Selected server"><b id="srvInitial">V</b><span id="srvName">Select a server</span></button>
+<nav id="nav" style="display:flex;flex-direction:column;gap:2px"></nav>
+<div class="grow"></div>
+<a class="nv" href="#">Documentation</a><a class="nv" href="#">Support</a>
+</aside>
+<div class="scrim" id="sc"></div>
+<div class="main">
+<header class="top"><button class="btn menu" id="mn" aria-label="Open menu">Menu</button><button class="btn dsk" id="collapseBtn" aria-label="Toggle sidebar" aria-expanded="true" title="Toggle sidebar"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><span class="grow" id="crumb">Vela</span><button class="btn" id="kp" aria-label="Search settings (Ctrl K)">Search ⌘K</button><div class="usr" id="usrChip"><i>U</i><span>Signed in with Discord</span></div><a class="btn" id="logoutBtn" href="/logout">Log out</a></header>
+<div class="body" id="body"><div class="wrap" id="pg"></div></div>
+</div></div>
+<div class="bar" id="bar" aria-live="polite"><div><span>You have unsaved changes</span><button class="btn" id="rs">Reset</button><button class="btn p" id="sv">Save changes</button></div></div>
+<div class="toast" id="tt" role="status" aria-live="polite">Changes saved</div>
+<div class="pal" id="pal" role="dialog" aria-modal="true" aria-label="Search settings"><div class="pal-box"><input id="pin" type="search" placeholder="Type to search settings and commands… (Esc to close)" aria-label="Search settings and commands" autocomplete="off"><div class="pal-list" id="pl" role="listbox" aria-label="Results"></div></div></div>
+<div class="movl" id="cmdModal" hidden><div class="mobox" role="dialog" aria-modal="true" aria-labelledby="cmdModalTitle">
+<h2 id="cmdModalTitle">Edit command</h2>
+<div class="row"><div><label for="ceCooldown">Cooldown (seconds)</label><small>Time before the command can be used again.</small></div><input class="in" id="ceCooldown" type="number" min="0" value="5"></div>
+<div class="row stack"><div><label for="ceAliases">Aliases</label><small>Type an alias and press Enter to save — click × to remove.</small></div><div class="chips" id="ceChips"></div><input class="in" id="ceAliases" type="text" placeholder="Type an alias and press Enter"></div>
+<div class="row stack" id="ceInvWrap" hidden><div><span class="lb" id="ceInvLabel">Inverse command aliases</span><small id="ceInvHint">The inverse command shares this editor — same way of adding.</small></div><div class="chips" id="ceInvChips"></div><input class="in" id="ceInvAliases" type="text" placeholder="Type an inverse alias and press Enter"></div>
+<div class="row stack"><div><span class="lb">Allowed roles</span><small>Who can use it. Empty = everyone (admins always can).</small></div><div class="dd" id="ddAllowRole"><button type="button" class="in dd-btn" data-dd-btn><span>Select roles…</span><span class="dd-n">None selected</span></button><div class="dd-panel" hidden><input type="text" class="in dd-search" placeholder="Search roles…" aria-label="Search roles"><div class="dd-list"></div></div></div></div>
+<div class="row stack"><div><span class="lb">Blocked roles</span><small>Who can never use it.</small></div><div class="dd" id="ddDenyRole"><button type="button" class="in dd-btn" data-dd-btn><span>Select roles…</span><span class="dd-n">None selected</span></button><div class="dd-panel" hidden><input type="text" class="in dd-search" placeholder="Search roles…" aria-label="Search roles"><div class="dd-list"></div></div></div></div>
+<div class="row stack"><div><span class="lb">Allowed chats</span><small>Where it can be used. Empty = all channels.</small></div><div class="dd" id="ddAllowCh"><button type="button" class="in dd-btn" data-dd-btn><span>Select channels…</span><span class="dd-n">None selected</span></button><div class="dd-panel" hidden><input type="text" class="in dd-search" placeholder="Search channels…" aria-label="Search channels"><div class="dd-list"></div></div></div></div>
+<div class="row stack"><div><span class="lb">Blocked chats</span><small>Where it can never be used.</small></div><div class="dd" id="ddDenyCh"><button type="button" class="in dd-btn" data-dd-btn><span>Select channels…</span><span class="dd-n">None selected</span></button><div class="dd-panel" hidden><input type="text" class="in dd-search" placeholder="Search channels…" aria-label="Search channels"><div class="dd-list"></div></div></div></div>
+<div class="morow"><button class="btn" id="ceCancel" type="button">Cancel</button><button class="btn p" id="ceSave" type="button">Save</button></div>
+</div></div>
+<div class="movl" id="logModal" hidden><div class="mobox" role="dialog" aria-modal="true" aria-labelledby="lmTitle">
+<h2 id="lmTitle">Log event</h2>
+<p style="color:var(--mut);font-size:.82rem;margin:0 0 6px" id="lmSub"></p>
+<div class="row"><div><label for="lmChannel">Channel</label><small>Where this log is sent.</small></div><select class="in" id="lmChannel"></select></div>
+<div class="row"><div><span class="lb">Color</span><small>Embed accent color.</small></div><div class="lm-color-wrap"><input type="color" id="lmColor" value="#a9b9d8" aria-label="Log embed color"><code id="lmColorHex">#A9B9D8</code></div></div>
+<div class="row stack"><div><span class="lb">Ping Roles</span><small>Roles mentioned with every log. Empty = no ping.</small></div><div class="dd" id="lmDdPing"><button type="button" class="in dd-btn" data-dd-btn><span>Select roles…</span><span class="dd-n">None selected</span></button><div class="dd-panel" hidden><input type="text" class="in dd-search" placeholder="Search roles…" aria-label="Search roles"><div class="dd-list"></div></div></div></div>
+<div class="row stack"><div><span class="lb">Ignore Channels</span><small>Events from these channels are not logged.</small></div><div class="dd" id="lmDdIgCh"><button type="button" class="in dd-btn" data-dd-btn><span>Select channels…</span><span class="dd-n">None selected</span></button><div class="dd-panel" hidden><input type="text" class="in dd-search" placeholder="Search channels…" aria-label="Search channels"><div class="dd-list"></div></div></div></div>
+<div class="row stack"><div><span class="lb">Ignore Roles</span><small>Events involving these roles are not logged.</small></div><div class="dd" id="lmDdIgRole"><button type="button" class="in dd-btn" data-dd-btn><span>Select roles…</span><span class="dd-n">None selected</span></button><div class="dd-panel" hidden><input type="text" class="in dd-search" placeholder="Search roles…" aria-label="Search roles"><div class="dd-list"></div></div></div></div>
+<div class="morow"><button class="btn" id="lmCancel" type="button">Cancel</button><button class="btn p" id="lmSave" type="button">Save</button></div>
+</div></div>
+<div class="movl" id="secModal" hidden><div class="mobox" role="dialog" aria-modal="true" aria-labelledby="secModalTitle">
+<div class="sm-h"><span class="sic" id="secModalIcon"></span><h2 id="secModalTitle">Option</h2><button class="chipx" id="secX" type="button" aria-label="Close">×</button></div>
+<div id="secModalBody"></div>
+<div class="morow"><button class="blink" id="secReset" type="button">Reset to default</button><span style="flex:1"></span><button class="btn" id="secCancel" type="button">Cancel</button><button class="btn p" id="secSave" type="button">Save</button></div>
+</div></div>
+<script>
+const $=s=>document.querySelector(s),LOGO="<%= VLOGO %>";
+const E=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const I={home:'<path d="M3 11l9-8 9 8M5 10v10h14V10"/>',hand:'<path d="M12 21s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 11c0 5.5-7 10-7 10z"/>',shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',tick:'<path d="M4 8h16v8H4zM9 8v8"/>',tag:'<path d="M20 12l-8 8-9-9V3h8z"/>',code:'<path d="M8 8l-5 4 5 4M16 8l5 4-5 4"/>',lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',gift:'<path d="M3 9h18v4H3zM5 13v8h14v-8M12 9v12"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',bell:'<path d="M6 16v-5a6 6 0 0112 0v5l2 2H4zM10 21h4"/>',chat:'<path d="M4 5h16v11H9l-5 4z"/>',check:'<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',slash:'<path d="M8 20L16 4"/>',crown:'<path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/>',users:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.5 3-5 6-5s6 1.5 6 5M17 6a3 3 0 010 6M21 20c0-2.500-1.500-4-3.500-4.600"/>',bolt:'<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',doc:'<path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/>',link:'<path d="M10 13a5 5 0 007.5.5l3-3a5 5 0 00-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 00-7.5-.5l-3 3a5 5 0 007 7l1.7-1.7"/>',ext:'<path d="M15 3h6v6M10 14L21 3M21 14v5a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h5"/>',at:'<circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 006 0v-1a10 10 0 10-4 8"/>',aa:'<path d="M4 20L9 4M20 20L15 4M6.5 14h11"/>'};
+const CM=[["apply","Manage the application system"],["ban","Bans a member from the server"],["clear","Clears messages from the channel"],["giveaway","Create a new giveaway"],["hide","Hides a channel"],["kick","Kicks a member from the server"],["lock","Locks a channel"],["move","Moves a member to your voice channel"],["mute","Mutes a member"],["protection","All protections in one smart command"],["prison","Sends a member to prison"],["unprison","Releases a member from prison"],["punish","Shows punishments on a member"],["blacklist","Server blacklist: ban and re-ban"],["blockimg","Blocks a member from sending images"],["unblockimg","Allows a member to send images"],["noimages","Disables images in channels"],["images","Enables images in channels"],["role","Gives or removes a role from a user"],["rrole","Removes a role from a user"],["rtimeout","Removes timeout from a member"],["rules","Manage the rules system"],["setnick","Changes a member's nickname"],["ticket","Manage the ticket system"],["timeout","Timeouts a member"],["unban","Unbans a user by ID"],["unhide","Unhides a channel"],["unlock","Unlocks a channel"],["unmute","Unmutes a member"],["unwarn","Removes a warning from a member"],["warn","Warns a member"],["warns","Shows warnings for a member"],["rooms","Shows voice rooms occupancy"],["topvoice","Top members by voice time"],["toptext","Top members by messages"],["topgroups","Top roles by members"],["cgroup","Create a private group"],["dgroup","Delete a private group"],["grole","Add a member to a group"],["groups","List private groups"],["ogroup","Transfer group ownership"],["panel","Post the groups join panel"],["removemember","Remove a member from a group"],["avatar","Shows user avatar"],["banner","Shows user or server banner"],["ping","Shows bot latency information"],["roles","Shows server roles information"],["server","Shows server information"],["user","Shows user information"],["verify","Verify yourself and get the member role"]];
+/* System commands from system folder — prefix-based, grouped by category */
+const SYS_SEC=[["antibots","تشغيل/إيقاف مانع دخول البوتات"],["anticreate","الحماية من إنشاء القنوات"],["antidelete","الحماية من حذف القنوات والرولات"],["antijoin","مانع الانضمام التلقائي"],["antilink","مانع الروابط الخارجية"],["antiperms","الحماية من تغيير الصلاحيات"],["antiserveurl","مانع روابط السيرفرات الأخرى"],["antispam","الحماية من السبام"],["antiwebhook","الحماية من الويب هوك"],["aprot","تفعيل/إيقاف الحماية الكاملة"],["dprot","تفعيل الحماية الشديدة"],["sloprot","تفعيل حماية الحسابات الجديدة"],["maxsec","تفعيل الحد الأقصى من الحماية"],["sechard","تفعيل الحماية الصارمة"],];
+const SYS_BRL=[["brole","إضافة/إزالة رول من قائمة التخطي"],["brolelist","عرض رولات التخطي"],["block","حجب مستخدم من البوت"],["unblock","إلغاء حجب مستخدم"],["wanti","إضافة استثناء من الحماية"],["wantilist","عرض قائمة الاستثناءات"]];
+const SYS_SET_PUN=[["setpunish","تحديد عقوبة الحماية لكل نوع"],["setratelimit","تحديد معدل الطلبات"],["setrjoin","تحديد أعمار الحسابات للانضمام"],["setsecurity","ضبط إعدادات الحماية"],["setbanlimit","تحديد حد الباندات"],["setpunish","ضبط العقوبات لكل موديول"]];
+const SYS_TKT=[["autoclose","إغلاق تلقائي للتذكرة"],["claim","استلام تذكرة"],["close","إغلاق تذكرة"],["rename","إعادة تسمية تذكرة"],["tmenu","عرض قائمة التذاكر"],["tpanel","إرسال لوحة التذاكر"],["setticket","إعداد نظام التذاكر"],["setticketmsg","تخصيص رسالة التذكرة"],["tcrole","تحديد رول التذاكر"],["tcopen","فتح تذكرة مغلقة"],["tcrestart","إعادة تشغيل نظام التذاكر"],["setlog","تحديد قناة سجل التذاكر"],["ticimage","تخصيص صورة التذكرة"],["tipanel","لوحة معلومات التذاكر"]];
+const SYS_SET_SRV=[["servername","تغيير اسم السيرفر"],["serveravatar","تغيير أيقونة السيرفر"],["setecolor","تغيير لون الإمبيد"],["advice","إرسال نصيحة للسيرفر"],["pslist","عرض قائمة الحمايات"],["cols","عرض الألوان"],["restbackup","استعادة نسخة احتياطية"],["restemoji","استعادة الإيموجيات"],["word","إضافة كلمة محظورة"],["wordlist","عرض الكلمات المحظورة"]];
+/* Field: [type,key,label,hint,options]. Types: sw switch, tx text, ta textarea, sl select, nm number, im image */
+/* Log events: [key,label,category]. Keep in sync with LOG_TYPES in velaMap.js. Old interface style: each event has its own channel + switch. */
+const LOG_TYPES=[
+["memberBan","Member banned","Moderation"],["memberUnban","Member unbanned","Moderation"],["memberKick","Member kicked","Moderation"],["memberTimeout","Member timed out","Moderation"],["memberUntimeout","Timeout removed","Moderation"],
+["messageDelete","Message deleted","Messages"],["messageEdit","Message edited","Messages"],["messageBulkDelete","Bulk messages deleted","Messages"],["messageImage","Image sent","Messages"],["messageImageDelete","Image deleted","Messages"],
+["memberJoin","Member joined","Members"],["memberLeave","Member left","Members"],["nicknameUpdate","Nickname changed","Members"],
+["roleCreate","Role created","Roles"],["roleDelete","Role deleted","Roles"],["roleUpdate","Role updated","Roles"],["roleGive","Role given","Roles"],["roleRemove","Role removed","Roles"],
+["channelCreate","Channel created","Channels"],["channelDelete","Channel deleted","Channels"],["channelUpdate","Channel updated","Channels"],["threadCreate","Thread created","Channels"],["threadDelete","Thread deleted","Channels"],["threadUpdate","Thread updated","Channels"],
+["voiceJoin","Voice joined","Voice"],["voiceLeave","Voice left","Voice"],["voiceMove","Voice moved","Voice"],["voiceServerMute","Voice muted (server)","Voice"],["voiceServerDeafen","Voice deafened (server)","Voice"],
+["serverUpdate","Server updated","Server"],["emojiCreate","Emoji created","Server"],["emojiDelete","Emoji deleted","Server"],["emojiUpdate","Emoji updated","Server"],["stickerCreate","Sticker created","Server"],["stickerDelete","Sticker deleted","Server"],["stickerUpdate","Sticker updated","Server"],["inviteCreate","Invite created","Server"]];
+const LOG_CATS=["Moderation","Messages","Members","Roles","Channels","Voice","Server"];
+const logGroups=()=>LOG_CATS.map(c=>[c,LOG_TYPES.filter(t=>t[2]===c).map(t=>["logrow",t[0],t[1]])]);
+/* Logging cards: tab order, per-category icon, per-event description for the Manage dialog. */
+const LOG_TAB_ORDER=["Moderation","Channels","Roles","Server","Messages","Members","Voice"];
+const LOG_ICONS={Moderation:"shield",Channels:"list",Roles:"tag",Server:"home",Messages:"chat",Members:"users",Voice:"bolt"};
+const LOG_DESC={memberBan:"A member was banned from the server",memberUnban:"A member's ban was lifted",memberKick:"A member was kicked from the server",memberTimeout:"A member was timed out",memberUntimeout:"A member's timeout was removed",messageDelete:"A message was deleted",messageEdit:"A message was edited",messageBulkDelete:"Many messages were deleted at once",messageImage:"An image was sent",messageImageDelete:"A sent image was deleted",memberJoin:"A member joined the server",memberLeave:"A member left the server",nicknameUpdate:"A member's nickname was changed",roleCreate:"A role was created",roleDelete:"A role was deleted",roleUpdate:"A role was updated",roleGive:"A role was given to a member",roleRemove:"A role was removed from a member",channelCreate:"A channel was created",channelDelete:"A channel was deleted",channelUpdate:"A channel was updated",threadCreate:"A thread was created",threadDelete:"A thread was deleted",threadUpdate:"A thread was updated",voiceJoin:"A member joined a voice channel",voiceLeave:"A member left a voice channel",voiceMove:"A member moved voice channels",voiceServerMute:"A member was server-muted",voiceServerDeafen:"A member was server-deafened",serverUpdate:"Server settings were updated",emojiCreate:"An emoji was created",emojiDelete:"An emoji was deleted",emojiUpdate:"An emoji was renamed",stickerCreate:"A sticker was created",stickerDelete:"A sticker was deleted",stickerUpdate:"A sticker was updated",inviteCreate:"An invite was created"};
+/* Inverse pairs: a command and its opposite share one Edit dialog for aliases. */
+const PAIRS={lock:"unlock",unlock:"lock",hide:"unhide",unhide:"hide",mute:"unmute",unmute:"mute",ban:"unban",unban:"ban",timeout:"rtimeout",rtimeout:"timeout",warn:"unwarn",unwarn:"warn",role:"rrole",rrole:"role",prison:"unprison",unprison:"prison",blockimg:"unblockimg",unblockimg:"blockimg",noimages:"images",images:"noimages"};
+/* Public = bot's general/ folder, Admin = bot's admin/ folder. */
+const CMD_PUB=new Set(["avatar","banner","ping","roles","server","user","rooms","topvoice","toptext","topgroups","verify"]);
+const CMD_GROUPS=new Set(["cgroup","dgroup","grole","groups","ogroup","panel","removemember"]);
+const P={
+overview:{t:"Overview",i:"home",d:"A summary of your server and the bot."},
+settings:{t:"Settings",i:"gear",d:"General options for the bot.",g:[["General",[["sl","lang","Language","Language used by the bot.",["English","العربية"]],["tx","emb","Embed color","Hex value, for example #a9b9d8."],["role","mgr","Dashboard manager role","Choose a role — members with this role can use the dashboard."]]]]},
+commands:{t:"Commands",i:"slash",d:"Choose which commands are available.",g:[["Public commands",CM.filter(c=>CMD_PUB.has(c[0])).map(c=>["cmd",c[0],"/"+c[0],c[1]])],["Admin commands",CM.filter(c=>!CMD_PUB.has(c[0])&&!CMD_GROUPS.has(c[0])).map(c=>["cmd",c[0],"/"+c[0],c[1]])],["Groups",CM.filter(c=>CMD_GROUPS.has(c[0])).map(c=>["cmd",c[0],"/"+c[0],c[1]])]]},
+welcome:{t:"Welcome & Goodbye",i:"hand",d:"Greet new members and say goodbye.",g:[["Welcome message",[["sw","wOn","Enable welcome message","Send a message when someone joins."],["channel","wCh","Channel","Choose a channel."],["ta","wMsg","Message"],["pv","w","Preview"],["im","wImg","Welcome image","","w"],["sl","wBgMode","Background mode","Transparent = no backdrop. Solid = flat color. Custom image = your picture.",["Transparent","Solid","Custom image"]],["tx","wBgColor","Background color","Hex for Solid mode, for example #14171c."],["sw","wShowN","Show member name on image"],["sw","wShowA","Show member avatar on image"],["sw","wDm","Also send as a direct message"],["btn","wTest","Send test","Send a test card to the welcome channel."]]],["Goodbye message",[["sw","gOn","Enable goodbye message","Send a message when someone leaves."],["channel","gCh","Channel","Choose a channel."],["ta","gMsg","Message"],["im","gImg","Goodbye image","","g"],["sw","gShowN","Show member name on image"],["sw","gShowA","Show member avatar on image"]]]]},
+autoroles:{t:"Auto Roles",i:"users",d:"Give roles to new members automatically.",g:[["Auto roles",[["sw","arOn","Enable auto roles"],["role","arRole","Role for members","Choose a role from your server."],["role","arBot","Role for bots","Choose a role from your server."],["nm","arDelay","Delay in minutes","0 gives the role right away."]]]]},
+applications:{t:"Applications",i:"doc",d:"Review staff applications.",g:[]},
+roles:{t:"Reaction Roles",i:"tag",d:"Let members pick their own roles.",g:[["Reaction roles",[["sw","rrOn","Enable reaction roles"],["channel","rrCh","Channel","Choose a channel."],["sl","rrMode","Mode","How many roles a member can pick.",["Multiple roles","One role only"]]]]]},
+verification:{t:"Verification",i:"check",d:"Confirm new members before they can chat.",g:[["Verification",[["sw","vOn","Enable verification"],["sl","vMode","Method","",["Button","Command"]],["channel","vCh","Verification channel","Choose a channel."],["role","vRole","Role after verification","Choose the role given after verification."],["role","vDenyRole","Blocked role","Members with this role cannot verify."],["btn","vPost","Post verify message","Post the verify button in the channel."]]],["Verify message",[["sw","vEmbOn","Embed message","On = styled embed. Off = plain text."],["ta","vMsg","Message","Shown with the verify button."],["tx","vEmbImg","Image link","Your image URL shown in the message (https://…). Background removed automatically."],["vpv","vPv",""]]]]},
+leveling:{t:"Leveling",i:"star",d:"Reward members for being active.",g:[["Leveling",[["sw","lvOn","Enable leveling"],["nm","lvXp","XP per message"],["nm","lvCd","Cooldown in seconds","Time between XP gains."],["channel","lvCh","Level-up channel","Choose a channel."],["ta","lvMsg","Level-up message"]]]]},
+tickets:{t:"Tickets",i:"tick",d:"An organized support system.",g:[]},
+templates:{t:"Templates",i:"list",d:"Build your server from a ready-made structure, or design your own.",g:[]},
+notifications:{t:"Notifications",i:"bell",d:"YouTube, Twitch and Kick alerts in your server.",g:[]},
+moderation:{t:"Moderation",i:"shield",d:"Rules for warnings and punishments.",g:[["Moderation",[["sw","mDm","Message members when action is taken"],["sw","mReason","Require a reason"],["channel","mLog","Moderation log channel","Choose a channel."],["nm","wThr","Warnings before punishment"],["sl","wAct","Punishment","",["Timeout","Kick","Ban"]],["nm","toDur","Default timeout in minutes"]]]]},
+automod:{t:"Auto Moderation",i:"bolt",d:"Detect and handle unwanted content.",g:[["Filters",[["sw","amOn","Enable Auto Moderation"],["sw","amSpam","Spam"],["sw","amLink","Links"],["sw","amInv","Discord invites"],["sw","amCaps","Excessive capital letters"],["sw","amMen","Mass mentions"],["ta","amWords","Blocked words","One word or phrase per line."]]],["Response",[["sl","amAct","Action","",["Delete message","Warn","Timeout"]],["tx","amEx","Exempt roles"]]]]},
+security:{t:"Security",i:"lock",d:"Extra protection for your server.",g:[
+["🛡️ Anti-Raid & Basic Protection",[["sw","scRaid","Anti-raid","Act when many accounts join quickly."],["nm","scJoin","Joins allowed per 10 seconds"],["sw","scNew","Restrict new accounts"],["nm","scAge","Minimum account age in days"]]],
+["📅 Anti Join Dates",[["nm","sysJoinMinAge","Blocked account age (days)","Accounts newer than this cannot join (/antijoin). 0 = off. Recommended: 7."],["nm","sysJoinAllowedAge","Allowed account age, optional (days)","Accounts older than this always join. 0 or empty = off — not required."],["tx","sysJoinReason","Default block message","Kick reason for blocked new accounts."]]],
+["🔒 Anti-Nuke Protection",[["sw","sysAntiCreate","Anti Channel Create","يمنع إنشاء قنوات بشكل مفاجئ."],["sw","sysAntiDelete","Anti Channel/Role Delete","يمنع حذف القنوات والرولات."],["sw","sysAntiPerms","Anti Permissions Change","يمنع تغيير صلاحيات الرولات."],["sw","sysAntiWebhook","Anti Webhook","يمنع إنشاء الويب هوك غير المصرح به."],["sw","sysAntiBots","Anti Bots Add","يمنع إضافة بوتات بدون إذن."],["sw","sysAntiSpam","Anti Spam","يحمي من السبام في القنوات."],["sw","sysAntiLink","Anti Links","يمنع الروابط الخارجية."],["sw","sysAntiJoin","Anti Mass Join","يحمي من الانضمام الجماعي المشبوه."]]],
+["⚖️ Punishment Settings",[["sl","sysPunishBan","Ban Punishment","العقوبة عند اكتشاف ban غير مصرح.",["kick","ban","timeout","strip","none"]],["sl","sysPunishKick","Kick Punishment","العقوبة عند اكتشاف kick غير مصرح.",["kick","ban","timeout","strip","none"]],["sl","sysPunishChanDel","Channel Delete Punishment","العقوبة عند حذف قنوات.",["kick","ban","timeout","strip","none"]],["sl","sysPunishRoleDel","Role Delete Punishment","العقوبة عند حذف رولات.",["kick","ban","timeout","strip","none"]],["sl","sysPunishChanCreate","Channel Create Punishment","العقوبة عند إنشاء قنوات.",["kick","ban","timeout","strip","none"]],["sl","sysPunishWebhook","Webhook Punishment","العقوبة عند إنشاء webhook.",["kick","ban","timeout","strip","none"]],["sl","sysPunishBotAdd","Bot Add Punishment","العقوبة عند إضافة بوت.",["kick","ban","timeout","strip","none"]],["nm","sysTimeoutMin","Timeout Duration (minutes)","مدة التايم أوت عند اختيار timeout كعقوبة."]]],
+["🔑 Bypass Roles (Protection Skip)",[["role","sysBypassRole1","Bypass Role 1","الرول الأول المعفى من الحماية."],["role","sysBypassRole2","Bypass Role 2","الرول الثاني المعفى من الحماية."],["role","sysBypassRole3","Bypass Role 3","الرول الثالث المعفى من الحماية."]]],
+["🚫 Blocked Words",[["sw","sysWordFilter","Enable Word Filter","تفعيل فلتر الكلمات المحظورة."],["ta","sysWordList","Blocked Words","كلمة أو عبارة في كل سطر."]]],["Protection Commands",[["cmd","sys_antibots","/antibots","تشغيل/إيقاف مانع دخول البوتات"],["cmd","sys_anticreate","/anticreate","الحماية من إنشاء القنوات"],["cmd","sys_antidelete","/antidelete","الحماية من حذف القنوات والرولات"],["cmd","sys_antijoin","/antijoin","مانع الانضمام التلقائي"]]]]},
+logging:{t:"Logging",i:"list",d:"Track important server activity.",g:logGroups()},
+responder:{t:"Auto Responder",i:"chat",d:"Reply automatically to chosen words.",g:[["Auto responder",[["sw","rsOn","Enable auto responder"],["tx","rsTr","Trigger word"],["ta","rsRes","Response"]]]]},
+announce:{t:"Embed",i:"bell",d:"Send messages to a channel as the bot.",g:[["Announcement",[["channel","anCh","Channel","Choose a channel."],["ta","anMsg","Message"],["im","anImg","Image"]]],["Embed & mention",[["tx","anTitle","Embed title","Shown above the message. Supports {server} {count} {user}."],["sl","anMention","Mention","Who to ping with the message.",["None","Here","Everyone"]],["btn","anSend","Send now","Send this announcement to the channel."]]]]},
+blacklist:{t:"Blacklist",i:"lock",d:"Banned users who are re-banned automatically.",g:[["Blacklist",[["sw","blReban","Auto re-ban","Re-ban blacklisted users if someone unbans them."]]]]},
+premium:{t:"Premium",i:"crown",d:"Your plan and its features."},
+audit:{t:"Audit Log",i:"clock",d:"Changes made from this dashboard."}};
+const updVpv=()=>{const m=document.querySelector(".vpv-m"),im=document.querySelector(".vpv-i");if(!m)return;m.textContent=S.vMsg||"";const u=String(S.vEmbImg||"").trim();if(/^https?:\/\//i.test(u)){im.src=u;im.hidden=false;im.onerror=()=>{im.hidden=true}}else{im.hidden=true;im.removeAttribute("src")}};
+const GR=[["Overview",["overview"]],["Protection",["moderation","automod","security","blacklist"]],["Welcome & Roles",["welcome","autoroles","applications","roles","verification"]],["Engagement",["leveling","tickets","notifications","templates"]],["Logs",["logging","audit"]],["Settings",["settings","commands","responder","announce","premium"]]];
+/* Guide: honest protection switches (no optimistic UI for protection keys) */
+const PROT=["amOn","scRaid","scNew","mDm","vOn","tkOn","lvOn","rrOn","arOn","sysAntiCreate","sysAntiDelete","sysAntiPerms","sysAntiWebhook","sysAntiBots","sysAntiSpam","sysAntiLink","sysAntiJoin","sysWordFilter"];
+const DV={lang:"English",emb:"#a9b9d8",wOn:1,wCh:"#welcome",blReban:1,imgFilterOn:1,vEmbOn:1,vMsg:"Press the button below to verify and unlock the server.",vEmbImg:"",wBgMode:"Transparent",wBgColor:"#14171c",sysJoinMinAge:0,sysJoinAllowedAge:0,sysJoinReason:"Your account is too new to join this server.",anMention:"None",anTitle:"",wMsg:"Welcome {user} to {server}! You are member #{count}.",gCh:"#goodbye",gMsg:"{user} has left {server}.",arDelay:0,rrCh:"#roles",rrMode:"Multiple roles",lvXp:15,lvCd:60,lvCh:"#levels",lvMsg:"{user} reached level {level}!",tkMax:1,mDm:1,mLog:"#mod-log",wThr:3,toDur:10,amOn:1,scJoin:10,scAge:7,wNx:50,wNy:78,wNs:7,gNx:50,gNy:78,gNs:7,wAx:50,wAy:36,wAs:20,gAx:50,gAy:36,gAs:20,wShowN:1,wShowA:1,gShowN:1,gShowA:1,lgCh:"#logs",lgMod:1,lgMsg:1,ccPre:"!",anCh:"#announcements"};
+const DEF={},LBL={};
+Object.values(P).forEach(p=>(p.g||[]).forEach(g=>g[1].forEach(f=>{if(f[0]=="pv"||f[0]=="vpv"||f[0]=="logrow"||f[0]=="cmd"||f[0]=="btn")return;LBL[f[1]]=f[2];DEF[f[1]]=f[0]=="sw"?(f[1][0]=="c"&&f[1][1]=="_"?1:0):f[0]=="nm"?0:f[0]=="sl"?f[4][0]:""})));
+CM.forEach(c=>{const n=c[0];LBL["c_"+n]="/"+n;DEF["c_"+n]=1;LBL["cooldown_"+n]="/"+n+" cooldown";DEF["cooldown_"+n]=5;LBL["aliases_"+n]="/"+n+" aliases";DEF["aliases_"+n]="";LBL["allowroles_"+n]="/"+n+" allowed roles";DEF["allowroles_"+n]=[];LBL["denyroles_"+n]="/"+n+" blocked roles";DEF["denyroles_"+n]=[];LBL["allowchats_"+n]="/"+n+" allowed channels";DEF["allowchats_"+n]=[];LBL["denychats_"+n]="/"+n+" blocked channels";DEF["denychats_"+n]=[]});
+LOG_TYPES.forEach(t=>{LBL["lgch_"+t[0]]=t[1]+" channel";DEF["lgch_"+t[0]]="";LBL["lgon_"+t[0]]=t[1];DEF["lgon_"+t[0]]=0;LBL["lgco_"+t[0]]=t[1]+" color";DEF["lgco_"+t[0]]="#a9b9d8";LBL["lgping_"+t[0]]=t[1]+" ping roles";DEF["lgping_"+t[0]]=[];LBL["lgigch_"+t[0]]=t[1]+" ignored channels";DEF["lgigch_"+t[0]]=[];LBL["lgigroles_"+t[0]]=t[1]+" ignored roles";DEF["lgigroles_"+t[0]]=[]});
+/* Ticket keys (custom renderer below; each has a real bot counterpart). */
+[["tkOn","Tickets enabled",1],["tkMax","Open tickets per member",1],["tkBtnClaim","Claim button",1],["tkBtnClose","Close button",1],["tkBtnTransfer","Transfer button",1],["tkBtnDelete","Delete button",0],["tkBtnNotify","Notify button",0],["tkPanelCh","Panel channel",""],["tkPanelStyle","Panel style","Buttons"],["tkEmbColor","Embed color","#3498db"],["tkEmbImg","Panel image",""],["tkThumb","Thumbnail",""],["tkFooter","Footer",""],["tkAnnounce","Announce new tickets",0],["tkInactiveMin","Auto-close inactive (minutes)",0],["tkClosedCat","Archive category",""],["tkDeleteAfter","Delete after close (seconds)",5],["tkTransOn","Enable transfer",0],["tkTransCat","Transfer category",""],["tkTransRole","Transfer role",""],["tkClaimCh","Claim log channel",""],["tkClaimFmt","Claim log format","Embed"],["tkCmdOn","Ticket command",0],["tkCmdCd","Command cooldown",5],["tkCmdAliases","Command aliases",""]].forEach(x=>{LBL[x[0]]=x[1];DEF[x[0]]=x[2]});
+LBL["tkSections"]="Ticket sections";DEF["tkSections"]=[];
+[["ntYtOn","YouTube enabled",0],["ntYtMin","YouTube check minutes",10],["ntYtTpl","YouTube template",""],["ntYtCh","YouTube Discord channel",""],["ntYtRole","YouTube mention role",""],
+["ntTwOn","Twitch enabled",0],["ntTwMin","Twitch check minutes",3],["ntTwTpl","Twitch template",""],["ntTwId","Twitch client ID",""],["ntTwSecret","Twitch client secret",""],["ntTwCh","Twitch Discord channel",""],["ntTwRole","Twitch mention role",""],
+["ntKkOn","Kick enabled",0],["ntKkMin","Kick check minutes",3],["ntKkTpl","Kick template",""],["ntKkCh","Kick Discord channel",""],["ntKkRole","Kick mention role",""]].forEach(x=>{LBL[x[0]]=x[1];DEF[x[0]]=x[2]});
+LBL["ntYtAccts"]="YouTube accounts";DEF["ntYtAccts"]=[];
+LBL["ntTwAccts"]="Twitch accounts";DEF["ntTwAccts"]=[];
+LBL["ntKkAccts"]="Kick accounts";DEF["ntKkAccts"]=[];
+LBL["tkCustomBtns"]="Custom ticket items";DEF["tkCustomBtns"]=[];
+[["tkBtnEmojiClaim","Claim button emoji","👋"],["tkBtnEmojiClose","Close button emoji","🔒"],["tkBtnEmojiTransfer","Transfer button emoji","🔀"],["tkBtnEmojiDelete","Delete button emoji","🗑️"],["tkBtnEmojiNotify","Notify button emoji","🔔"]].forEach(x=>{LBL[x[0]]=x[1];DEF[x[0]]=x[2]});
+Object.assign(DEF,DV);["w","g"].forEach(p=>["Nx","Ny","Ns","Ax","Ay","As"].forEach(s=>LBL[p+s]=(p=="w"?"Welcome":"Goodbye")+(s[0]=="N"?" name":" avatar")+" layout"));
+const cl=o=>JSON.parse(JSON.stringify(o));
+let saved=cl(DEF),S=cl(DEF),cur="overview",AUD=[];
+/*VELA-BIND: boot from server (real settings, user, guild, stats) */
+window.__velaFetch=async(url,opts)=>{
+  const r=await fetch(url,opts);
+  if(r.status===401){location.href="/auth/discord";throw new Error("unauthorized")}
+  return r;
+};
+async function boot(){
+  const r=await window.__velaFetch("/api/vela/boot");
+  const B=await r.json();
+  if(B.state&&typeof B.state==="object"){S=Object.assign(cl(DEF),B.state);saved=cl(S)}
+  syncRTL();
+  window.__VELA_ROLES=Array.isArray(B.roles)?B.roles:[];
+  window.__VELA_CHANNELS=Array.isArray(B.channels)?B.channels:[];
+  window.__VELA_CATS=Array.isArray(B.categories)?B.categories:[];
+  if(B.guild){
+    const sn=document.getElementById("srvName");if(sn)sn.textContent=B.guild.name||"Select a server";
+    const si=document.getElementById("srvInitial");if(si)si.textContent=(B.guild.name||"V").charAt(0).toUpperCase();
+  }
+  if(B.user){
+    const chip=document.getElementById("usrChip");
+    if(chip){chip.innerHTML="";const im=document.createElement("img");im.src=B.user.avatar||"";im.alt="";im.width=28;im.height=28;im.onerror=()=>im.remove();const sp=document.createElement("span");sp.textContent=B.user.globalName||B.user.username||"User";chip.appendChild(im);chip.appendChild(sp)}
+  }
+  window.__VELA_BOOT__=B;
+  go("overview");
+  try{const h=(location.hash||"").replace("#","");if(h.indexOf("security/")===0){go("security");setSecTab(h.slice(9));}else if(h&&P[h])go(h)}catch(_){}
+  addEventListener("hashchange",()=>{try{const h=(location.hash||"").replace("#","");if(h.indexOf("security/")===0){if(cur!=="security")go("security");setSecTab(h.slice(9));}else if(h&&P[h]&&h!==cur)go(h)}catch(_){}});
+}
+boot().catch(()=>{document.getElementById("pg").innerHTML=`<p class="empty">Could not load dashboard data.</p>`});
+async function apiSave(state){
+  const r=await window.__velaFetch("/api/vela/save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({state})});
+  return r.json();
+}
+function toast(msg,err){
+  const t=$("#tt");
+  t.textContent=msg;
+  t.classList.toggle("err",!!err);
+  t.classList.add("o");
+  setTimeout(()=>t.classList.remove("o"),err?4000:2200);
+}
+$("#nav").innerHTML=GR.map(([n,ks])=>`<p class="gh">${n}</p>`+ks.map(k=>`<button class="nv" data-k="${k}"><svg viewBox="0 0 24 24" aria-hidden="true">${I[P[k].i]}</svg>${P[k].t}</button>`).join("")).join("");
+$("#nav").onclick=e=>{const b=e.target.closest("[data-k]");if(b){go(b.dataset.k);tg(0)}};
+const dirty=()=>JSON.stringify(S)!=JSON.stringify(saved);
+const chk=()=>$("#bar").classList.toggle("o",dirty());
+const R=m=>m.replace(/{user}/g,"@NewMember").replace(/{server}/g,"Demo server").replace(/{count}/g,"1").replace(/{level}/g,"2");
+function fld(f){const[t,k,l,h,o]=f,sm=h?`<small>${h}</small>`:"";
+if(t=="sw"){const on=!!S[k];return`<div class="row"><div><span class="lb" id="l-${k}">${l}</span>${sm}</div><div class="sw-w"><span class="sw-st" data-st="${k}">${on?"Enabled":"Disabled"}</span><button class="sw" role="switch" aria-labelledby="l-${k}" aria-checked="${on}" data-k="${k}"></button></div></div>`}
+if(t=="btn")return`<div class="row"><div><span class="lb">${l}</span>${sm}</div><button class="btn p" type="button" data-act="${k}">${l}</button></div>`;
+if(t=="cmd"){const ck="c_"+k;return`<div class="row"><div><span class="lb" id="l-${ck}">${l}</span>${h?`<small>${E(h)}</small>`:""}</div><div style="display:flex;gap:8px;align-items:center"><button class="btn" type="button" data-cmd-edit="${k}">Edit</button><button class="sw" role="switch" aria-labelledby="l-${ck}" aria-checked="${!!S[ck]}" data-k="${ck}"></button></div></div>`;}
+if(t=="ta")return`<div class="row stack"><div><label for="${k}">${l}</label>${sm}</div><textarea id="${k}" data-k="${k}">${E(S[k])}</textarea>${/Msg$/.test(k)?`<div class="vars" data-t="${k}">${["{user}","{server}","{count}"].map(v=>`<button type="button">${v}</button>`).join("")}</div>`:""}</div>`;
+if(t=="sl")return`<div class="row"><div><label for="${k}">${l}</label>${sm}</div><select id="${k}" data-k="${k}">${o.map(x=>`<option${S[k]==x?" selected":""}>${x}</option>`).join("")}</select></div>`;
+if(t=="role"){const roles=window.__VELA_ROLES||[];const cur=String(S[k]??"");const opts=[`<option value="">No role</option>`].concat(roles.map(r=>{const v=String(r.id??r.name??"");const n=String(r.name??r.id??"");const sel=(cur===v||(cur&&cur===n))?" selected":"";return`<option value="${E(v)}"${sel}>${E(n)}</option>`}));const legacy=cur&&!roles.some(r=>String(r.id)===cur||String(r.name)===cur)?`<option value="${E(cur)}" selected>${E(cur)} (not found)</option>`:"";return`<div class="row"><div><label for="${k}">${l}</label>${sm}</div><select id="${k}" data-k="${k}">${opts.join("")}${legacy}</select></div>`;}
+if(t=="channel"){const chs=window.__VELA_CHANNELS||[];const cur=String(S[k]??"");const norm=s=>String(s||"").replace(/^#/,"").toLowerCase();const ncur=norm(cur);const opts=[`<option value="">No channel</option>`].concat(chs.map(c=>{const v=String(c.id??"");const n=String(c.name??"");const sel=(cur===v||(ncur&&ncur===norm(n)||ncur===norm("#"+n)||cur===("#"+n)))?" selected":"";return`<option value="${E(v)}"${sel}>#${E(n)}</option>`}));const legacy=cur&&!chs.some(c=>String(c.id)===cur||norm(c.name)===ncur||String("#"+c.name)===cur)?`<option value="${E(cur)}" selected>${E(cur)} (not found)</option>`:"";return`<div class="row"><div><label for="${k}">${l}</label>${sm}</div><select id="${k}" data-k="${k}">${opts.join("")}${legacy}</select></div>`;}
+if(t=="logrow"){const ck="lgch_"+k,ek="lgon_"+k,cc="lgco_"+k;const chs=window.__VELA_CHANNELS||[];const cur=String(S[ck]??"");const norm=s=>String(s||"").replace(/^#/,"").toLowerCase();const ncur=norm(cur);const opts=[`<option value="">No channel</option>`].concat(chs.map(c=>{const v=String(c.id??"");const n=String(c.name??"");const sel=(cur===v||(ncur&&ncur===norm(n)||cur===("#"+n)))?" selected":"";return`<option value="${E(v)}"${sel}>#${E(n)}</option>`}));const co=(/^#[0-9a-fA-F]{6}$/.test(S[cc]||"")?S[cc]:"#a9b9d8");return`<div class="logsq"><div class="lh"><span class="dot" style="background:${E(co)}"></span><span class="lb" id="l-${ek}">${l}</span><button class="sw" role="switch" aria-labelledby="l-${ek}" aria-checked="${!!S[ek]}" data-k="${ek}"></button></div><select data-k="${ck}" aria-label="${l} channel">${opts.join("")}</select><div class="lf"><span class="lc">Embed color <input type="color" data-k="${cc}" value="${E(co)}" aria-label="${l} embed color"></span></div></div>`;}
+if(t=="pv")return`<div class="row stack"><div><span class="lb">Preview</span><small>Drag the name or the avatar to move it. Drag a corner to resize it.</small></div><div class="wp pvw" data-p="${k}"><img src="${LOGO}" alt=""><div class="pb"><b>Vela</b> <small class="pc"></small><p class="pm" dir="auto"></p><div class="cv" hidden><img class="cbg" alt="Image preview"><div class="el am" data-e="A" tabindex="0" role="group" aria-label="Member avatar on image. Drag to move. Arrow keys move it, plus and minus resize it."><div class="ai"><svg viewBox="0 0 24 24" width="60%" fill="#98a0ae" aria-hidden="true"><circle cx="12" cy="9" r="4"/><path d="M4 21c0-4.5 4-7 8-7s8 2.5 8 7z"/></svg></div><i class="h" data-h="nw"></i><i class="h" data-h="ne"></i><i class="h" data-h="sw"></i><i class="h" data-h="se"></i></div><div class="el nm" data-e="N" tabindex="0" role="group" aria-label="Member name on image. Drag to move. Arrow keys move it, plus and minus resize it."><span dir="auto">NewMember</span><i class="h" data-h="nw"></i><i class="h" data-h="ne"></i><i class="h" data-h="sw"></i><i class="h" data-h="se"></i></div></div><small class="ce"></small></div></div><button class="btn rl" type="button" data-rl="${k}">Reset layout</button></div>`;
+if(t=="vpv")return`<div class="row stack"><div><span class="lb">Live preview</span><small>Updates as you type. The image background is removed automatically on post.</small></div><div class="wp"><img src="${LOGO}" alt=""><div class="pb"><b>Vela</b> <small style="color:var(--mut)">BOT</small><p class="vpv-m" dir="auto"></p><img class="vpv-i" alt="Attached image preview" style="max-width:100%;border-radius:8px;margin-top:8px" hidden></div></div></div>`;
+if(t=="im")return`<div class="row stack"><div><span class="lb">${l}</span><small>Paste an image link, or drop an image file below.</small></div><div class="im" data-k="${k}"${o?` data-p="${o}"`:""}><input class="in" type="url" data-u="${k}" aria-label="${l} link" placeholder="https://example.com/image.png" value="${/^data:/.test(S[k])?"":E(S[k])}"><div class="dz" tabindex="0" role="button">Drop an image here, or click to choose a file</div><input type="file" accept="image/*" hidden aria-label="${l} file"><div class="th"></div><div class="er" role="alert"></div></div></div>`;
+return`<div class="row"><div><label for="${k}">${l}</label>${sm}</div><input class="in" id="${k}" data-k="${k}" type="${t=="nm"?"number":"text"}" value="${E(S[k])}"></div>`}
+function updPv(p){const w=document.querySelector(`.pvw[data-p="${p}"]`);if(!w)return;w.querySelector(".pc").textContent=S[p+"Ch"];w.querySelector(".pm").textContent=R(S[p+"Msg"]);
+const cv=w.querySelector(".cv"),bg=w.querySelector(".cbg"),ce=w.querySelector(".ce"),im=S[p+"Img"];
+if(im){cv.classList.remove("noimg");if(bg.getAttribute("src")!==im){ce.textContent="";bg.onload=()=>{cv.hidden=false;ce.textContent=""};bg.onerror=()=>{cv.hidden=true;ce.textContent="Image could not be loaded."};bg.src=im}}else{cv.hidden=false;cv.classList.add("noimg");ce.textContent="Transparent background — drag to position.";bg.removeAttribute("src")}
+[["N","ShowN"],["A","ShowA"]].forEach(([E,sh])=>{const n=w.querySelector(`[data-e="${E}"]`);n.hidden=!S[p+sh];n.style.left=S[p+E+"x"]+"%";n.style.top=S[p+E+"y"]+"%";n.style.setProperty("--s",S[p+E+"s"])})}
+const updAll=()=>{["w","g"].forEach(updPv);updVpv()};
+function thumb(w){const k=w.dataset.k,v=S[k],th=w.querySelector(".th");th.innerHTML="";if(!v)return;if(!w.dataset.p){const i=new Image();i.alt="Selected image";i.onerror=()=>{w.querySelector(".er").textContent="Image could not be loaded."};i.src=v;th.appendChild(i)}const b=document.createElement("button");b.type="button";b.className="btn";b.textContent="Remove image";b.onclick=()=>{w.querySelector("input[type=url]").value="";setImg(w,"")};th.appendChild(b)}
+function setImg(w,v){S[w.dataset.k]=v;w.querySelector(".er").textContent="";thumb(w);if(w.dataset.p)updPv(w.dataset.p);chk()}
+function pick(w,f){const er=w.querySelector(".er");er.textContent="";if(!f)return;if(!/^image\//.test(f.type))return er.textContent="Choose an image file: PNG, JPG, GIF or WebP.";if(f.size>4*1048576)return er.textContent="The image is larger than 4 MB.";const r=new FileReader();r.onload=()=>{w.querySelector("input[type=url]").value="";setImg(w,r.result)};r.readAsDataURL(f)}
+async function cutWelcomeBg(w,payload){
+  const er=w.querySelector(".er");er.textContent="";
+  const th=w.querySelector(".th");th.innerHTML="Removing background…";
+  toast("Removing background (first time takes longer)…");
+  try{
+    const r=await window.__velaFetch("/api/vela/cutout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok||!d.image)throw new Error((d&&d.error)||"cutout failed");
+    w.querySelector("input[type=url]").value="";setImg(w,d.image);toast("Background removed.");
+  }catch(e){const fb=payload.image||"";w.querySelector("input[type=url]").value="";setImg(w,fb);toast("Kept original ("+(e.message||e)+").",true)}
+}
+function renderApplications(host){
+  host.innerHTML=`<div class="card"><h2>Staff positions</h2><div id="apPos"><p class="empty">Loading positions…</p></div></div>
+  <div class="card"><h2>Add position</h2>
+  <div class="row"><div><label for="apName">Name</label></div><input class="in" id="apName" type="text" placeholder="Moderator"></div>
+  <div class="row"><div><label for="apRole">Role</label><small>Given when accepted. Optional.</small></div><select class="in" id="apRole"><option value="">No role</option></select></div>
+  <div class="row stack"><div><label for="apQ">Questions</label><small>One question per line.</small></div><textarea id="apQ" rows="3"></textarea></div>
+  <div class="row"><div></div><button class="btn p" id="apAdd">Add position</button></div></div>
+  <div class="card"><h2>Review queue</h2><div id="apQueue"><p class="empty">Loading applications…</p></div></div>`;
+  const esc=E;
+  const roleName=id=>{const r=(window.__VELA_ROLES||[]).find(x=>String(x.id)===String(id)||String(x.name)===String(id));return r?r.name:id};
+  const fillRoleSelect=sel=>{const roles=window.__VELA_ROLES||[];sel.innerHTML=`<option value="">No role</option>`+roles.map(r=>`<option value="${esc(r.id)}">${esc(r.name)}</option>`).join("")};
+  fillRoleSelect(document.getElementById("apRole"));
+  const loadPos=()=>{
+    window.__velaFetch("/api/apply/settings").then(r=>{if(!r.ok)throw new Error("load failed");return r.json()}).then(d=>{
+      const pos=d.positions||[];
+      document.getElementById("apPos").innerHTML=pos.length?pos.map((p,i)=>`<div class="row"><div><span class="lb">${esc(p.name)}</span><small>${(p.questions||[]).length} questions${p.roleId?" · "+esc(roleName(p.roleId)):""}${p.enabled===false?" · disabled":""}</small></div><div style="display:flex;gap:8px"><button class="btn" data-ap-tg="${i}">${p.enabled===false?"Enable":"Disable"}</button><button class="btn" data-ap-del="${i}">Delete</button></div></div>`).join(""):`<p class="empty">No positions yet. Add the first one below.</p>`;
+      host.querySelectorAll("[data-ap-del]").forEach(b=>b.onclick=async()=>{
+        await window.__velaFetch("/api/apply/positions/"+b.dataset.apDel,{method:"DELETE"});
+        loadPos();
+      });
+      host.querySelectorAll("[data-ap-tg]").forEach(b=>b.onclick=async()=>{
+        const cur=await window.__velaFetch("/api/apply/settings").then(r=>r.json());
+        const list=cur.positions||[];
+        const it=list[+b.dataset.apTg];if(!it)return;
+        it.enabled=it.enabled===false?true:false;
+        await window.__velaFetch("/api/apply/settings",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({positions:list})});
+        loadPos();
+      });
+    }).catch(()=>{document.getElementById("apPos").innerHTML=`<p class="empty">Could not load positions.</p>`});
+  };
+  loadPos();
+  const loadQ=()=>{
+    window.__velaFetch("/api/vela/applications?status=pending").then(r=>r.json()).then(d=>{
+      const list=d.applications||[];
+      document.getElementById("apQueue").innerHTML=list.length?list.map(a=>`<div class="row stack"><div><span class="lb">${esc(a.position||"Application")}</span><small>${esc(a.userTag||a.userId||"")} · ${esc(a.appliedAt||"")}</small></div><details><summary>Answers (${(a.answers||[]).length})</summary>${(a.answers||[]).map((x,i)=>`<p><b>Q${i+1}.</b> ${esc(x)}</p>`).join("")}</details><div class="row"><div><label>Review note</label></div><input class="in" data-note="${a._id}" type="text" placeholder="Optional note"></div><div class="qa" style="padding:0"><button class="btn p" data-ap-ok="${a._id}">Accept</button><button class="btn" data-ap-no="${a._id}">Reject</button></div></div>`).join(""):`<p class="empty">No pending applications.</p>`;
+      host.querySelectorAll("[data-ap-ok],[data-ap-no]").forEach(b=>b.onclick=async()=>{
+        const id=b.dataset.apOk||b.dataset.apNo;
+        const note=(host.querySelector(`[data-note="${id}"]`)||{}).value||"";
+        await window.__velaFetch("/api/vela/applications/"+id,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({status:b.dataset.apOk?"accepted":"rejected",note})});
+        loadQ();
+      });
+    }).catch(()=>{document.getElementById("apQueue").innerHTML=`<p class="empty">Could not load applications.</p>`});
+  };
+  loadQ();
+  document.getElementById("apAdd").onclick=async()=>{
+    const name=document.getElementById("apName").value.trim();
+    const questions=document.getElementById("apQ").value.split("\n").map(s=>s.trim()).filter(Boolean);
+    if(!name||!questions.length){toast("Name and at least one question are required.",true);return}
+    const body={name,questions,roleId:document.getElementById("apRole").value.trim(),enabled:true};
+    const r=await window.__velaFetch("/api/apply/positions/add",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    if(r.ok){toast("Position added.");renderApplications(host)}else{toast("Could not add position.",true)}
+  };
+}
+function renderTickets(host){
+  const chOpts=(cur,empty)=>{const chs=window.__VELA_CHANNELS||[];const norm=s=>String(s||"").replace(/^#/,"").toLowerCase();const n=norm(cur);return `<option value="">${empty||"No channel"}</option>`+chs.map(c=>{const sel=(String(cur)===String(c.id)||(n&&n===norm(c.name)))?" selected":"";return`<option value="${E(c.id)}"${sel}>#${E(c.name)}</option>`}).join("")};
+  const catOpts=(cur)=>{const cs=window.__VELA_CATS||[];return `<option value="">No category</option>`+cs.map(c=>`<option value="${E(c.id)}"${String(cur)===String(c.id)?" selected":""}>${E(c.name)}</option>`).join("")};
+  const roleOpts=(cur)=>{const rs=window.__VELA_ROLES||[];return `<option value="">No role</option>`+rs.map(r=>`<option value="${E(r.id)}"${String(cur)===String(r.id)?" selected":""}>${E(r.name)}</option>`).join("")};
+  const sw=(k)=>`<div class="sw-w"><span class="sw-st" data-st="${k}">${S[k]?"Enabled":"Disabled"}</span><button class="sw" role="switch" aria-checked="${!!S[k]}" data-k="${k}" aria-label="${k}"></button></div>`;
+  const catName=id=>{const c=(window.__VELA_CATS||[]).find(x=>String(x.id)===String(id));return c?c.name:id};
+  const roleName=id=>{const r=(window.__VELA_ROLES||[]).find(x=>String(x.id)===String(id));return r?r.name:id};
+  const chName=id=>{const c=(window.__VELA_CHANNELS||[]).find(x=>String(x.id)===String(id));return c?"#"+c.name:id};
+  host.innerHTML=`
+  <div class="card"><h2>General</h2>
+    <div class="row"><div><span class="lb">Enable tickets</span></div>${sw("tkOn")}</div>
+    <div class="row"><div><label for="tkMax">Open tickets per member</label><small>Max open tickets at the same time.</small></div><input class="in" id="tkMax" data-k="tkMax" type="number" min="1" value="${E(S.tkMax??1)}"></div>
+  </div>
+  <div class="card"><h2>Panel</h2>
+    <div class="row"><div><label for="tkPanelCh">Panel channel</label><small>Ticket chat — members open tickets from here.</small></div><select class="in" id="tkPanelCh" data-k="tkPanelCh">${chOpts(S.tkPanelCh)}</select></div>
+    <div class="row"><div><span class="lb">Post channel</span><small>Sends the panel to the selected chat now.</small></div><button class="btn p" type="button" id="tkPost">Post now</button></div>
+    <div class="row"><div><label for="tkPanelStyle">Panel style</label><small>Buttons, dropdown list, or both.</small></div><select class="in" id="tkPanelStyle" data-k="tkPanelStyle">${["Buttons","Dropdown","Both"].map(x=>`<option${S.tkPanelStyle===x?" selected":""}>${x}</option>`).join("")}</select></div>
+    <div class="row"><div><label for="tkEmbColor">Embed color</label></div><input type="color" data-k="tkEmbColor" value="${E(/^#[0-9a-fA-F]{6}$/.test(S.tkEmbColor||"")?S.tkEmbColor:"#3498db")}" aria-label="Panel embed color"></div>
+    <div class="row stack"><div><label for="tkEmbImg">Panel image</label><small>Public https:// link only — Discord cannot show uploads.</small></div><input class="in" id="tkEmbImg" data-k="tkEmbImg" type="url" placeholder="https://…" value="${E(/^data:/.test(S.tkEmbImg||"")?"":S.tkEmbImg||"")}"></div>
+    <div class="row"><div><label for="tkThumb">Thumbnail</label><small>Small image URL. Optional.</small></div><input class="in" id="tkThumb" data-k="tkThumb" type="url" placeholder="https://…" value="${E(S.tkThumb||"")}"></div>
+    <div class="row"><div><label for="tkFooter">Footer text</label></div><input class="in" id="tkFooter" data-k="tkFooter" type="text" value="${E(S.tkFooter||"")}"></div>
+  </div>
+  <div class="card"><h2>Sections</h2><div class="er" id="tkCatWarn" hidden></div><div id="tkSecList"></div>
+    <div class="row"><div><label for="tkSecName">Name</label></div><input class="in" id="tkSecName" type="text" placeholder="Support"></div>
+    <div class="row"><div><label for="tkSecEmoji">Emoji</label></div><input class="in" id="tkSecEmoji" type="text" placeholder="🎫" style="max-width:120px"></div>
+    <div class="row"><div><label for="tkSecCat">Category</label><small>Tickets open inside this category.</small></div><select class="in" id="tkSecCat">${catOpts("")}</select></div>
+    <div class="row stack"><div><span class="lb">Responsible staff</span><small>Roles that can view and claim these tickets.</small></div><div class="dd" id="tkSecRoles"><button type="button" class="in dd-btn" data-dd-btn><span>Select roles…</span><span class="dd-n">None selected</span></button><div class="dd-panel" hidden><input type="text" class="in dd-search" placeholder="Search roles…"><div class="dd-list"></div></div></div></div>
+    <div class="row"><div><label for="tkSecImg">Section image</label><small>Public https:// link. Shown inside opened tickets.</small></div><input class="in" id="tkSecImg" type="url" placeholder="https://…"></div>
+    <div class="row"><div><label for="tkSecLog">Transcript channel</label><small>Closed-ticket transcripts go here.</small></div><select class="in" id="tkSecLog">${chOpts("")}</select></div>
+    <div class="row"><div></div><button class="btn p" type="button" id="tkSecAdd">Add section</button></div>
+  </div>
+  <div class="card"><h2>Buttons</h2>
+    <div class="row"><div><span class="lb">Claim</span><small>Let staff claim open tickets.</small></div><div style="display:flex;gap:8px;align-items:center"><input class="in" data-k="tkBtnEmojiClaim" maxlength="12" style="max-width:70px" value="${E(S.tkBtnEmojiClaim??"👋")}" aria-label="Claim button emoji">${sw("tkBtnClaim")}</div></div>
+    <div class="row"><div><span class="lb">Close</span><small>Archive + transcript, then delete.</small></div><div style="display:flex;gap:8px;align-items:center"><input class="in" data-k="tkBtnEmojiClose" maxlength="12" style="max-width:70px" value="${E(S.tkBtnEmojiClose??"🔒")}" aria-label="Close button emoji">${sw("tkBtnClose")}</div></div>
+    <div class="row"><div><span class="lb">Transfer</span><small>Needs Transfer enabled below.</small></div><div style="display:flex;gap:8px;align-items:center"><input class="in" data-k="tkBtnEmojiTransfer" maxlength="12" style="max-width:70px" value="${E(S.tkBtnEmojiTransfer??"🔀")}" aria-label="Transfer button emoji">${sw("tkBtnTransfer")}</div></div>
+    <div class="row"><div><span class="lb">Delete</span><small>End the ticket immediately.</small></div><div style="display:flex;gap:8px;align-items:center"><input class="in" data-k="tkBtnEmojiDelete" maxlength="12" style="max-width:70px" value="${E(S.tkBtnEmojiDelete??"🗑️")}" aria-label="Delete button emoji">${sw("tkBtnDelete")}</div></div>
+    <div class="row"><div><span class="lb">Notify</span><small>Ping the ticket owner.</small></div><div style="display:flex;gap:8px;align-items:center"><input class="in" data-k="tkBtnEmojiNotify" maxlength="12" style="max-width:70px" value="${E(S.tkBtnEmojiNotify??"🔔")}" aria-label="Notify button emoji">${sw("tkBtnNotify")}</div></div>
+  </div>
+  <div class="card"><h2>Custom items</h2><div id="tkCustList"></div>
+    <div class="row"><div><label for="tkCustName">Label</label><small>Button text shown on the ticket.</small></div><input class="in" id="tkCustName" type="text" placeholder="Rules"></div>
+    <div class="row"><div><label for="tkCustEmoji">Emoji</label></div><input class="in" id="tkCustEmoji" type="text" placeholder="🔗" maxlength="12" style="max-width:120px"></div>
+    <div class="row"><div><label for="tkCustUrl">Link URL</label><small>https://… — opens when pressed.</small></div><input class="in" id="tkCustUrl" type="url" placeholder="https://…"></div>
+    <div class="row"><div></div><div style="display:flex;gap:8px"><button class="btn" type="button" id="tkCustCancel" hidden>Cancel</button><button class="btn p" type="button" id="tkCustAdd">Add item</button></div></div>
+  </div>
+  <div class="card"><h2>Ticket command</h2>
+    <div class="row"><div><span class="lb">Enable /ticket</span><small>Setup command for admins.</small></div>${sw("tkCmdOn")}</div>
+    <div class="row"><div><label for="tkCmdCd">Cooldown (seconds)</label></div><input class="in" id="tkCmdCd" data-k="tkCmdCd" type="number" min="0" value="${E(S.tkCmdCd??5)}"></div>
+    <div class="row"><div><label for="tkCmdAliases">Aliases</label><small>Comma-separated.</small></div><input class="in" id="tkCmdAliases" data-k="tkCmdAliases" type="text" value="${E(S.tkCmdAliases||"")}"></div>
+  </div>
+  <div class="card"><h2>Notifications</h2>
+    <div class="row"><div><span class="lb">Announce new tickets</span><small>Post every new ticket to the claim log chat and mention staff.</small></div>${sw("tkAnnounce")}</div>
+  </div>
+  <div class="card"><h2>Auto-close inactive</h2>
+    <div class="row"><div><label for="tkInactiveMin">Minutes of inactivity</label><small>0 = off. Closed tickets get a transcript first.</small></div><input class="in" id="tkInactiveMin" data-k="tkInactiveMin" type="number" min="0" value="${E(S.tkInactiveMin??0)}"></div>
+  </div>
+  <div class="card"><h2>On close</h2>
+    <div class="row"><div><label for="tkClosedCat">Archive category</label><small>Closed tickets move here. Empty = just delete.</small></div><select class="in" id="tkClosedCat" data-k="tkClosedCat">${catOpts(S.tkClosedCat)}</select></div>
+    <div class="row"><div><label for="tkDeleteAfter">Delete after close (seconds)</label></div><input class="in" id="tkDeleteAfter" data-k="tkDeleteAfter" type="number" min="0" value="${E(S.tkDeleteAfter??5)}"></div>
+  </div>
+  <div class="card"><h2>Transfer</h2>
+    <div class="row"><div><span class="lb">Enable transfer</span><small>Adds a transfer button to tickets.</small></div>${sw("tkTransOn")}</div>
+    <div class="row"><div><label for="tkTransCat">Transfer category</label></div><select class="in" id="tkTransCat" data-k="tkTransCat">${catOpts(S.tkTransCat)}</select></div>
+    <div class="row"><div><label for="tkTransRole">Transfer role</label><small>Gets access to transferred tickets.</small></div><select class="in" id="tkTransRole" data-k="tkTransRole">${roleOpts(S.tkTransRole)}</select></div>
+  </div>
+  <div class="card"><h2>Claim log</h2>
+    <div class="row"><div><label for="tkClaimCh">Acceptance chat</label><small>New tickets and claims are posted here.</small></div><select class="in" id="tkClaimCh" data-k="tkClaimCh">${chOpts(S.tkClaimCh)}</select></div>
+    <div class="row"><div><label for="tkClaimFmt">Format</label><small>Embed or plain text.</small></div><select class="in" id="tkClaimFmt" data-k="tkClaimFmt"><option${S.tkClaimFmt!=="Plain text"?" selected":""}>Embed</option><option${S.tkClaimFmt==="Plain text"?" selected":""}>Plain text</option></select></div>
+  </div>
+  <div class="card"><h2>Staff stats</h2><div id="tkStats"><p class="empty">Loading…</p></div></div>`;
+  if(!(window.__VELA_CATS||[]).length){const w=document.getElementById("tkCatWarn");if(w){w.hidden=false;w.textContent="No categories loaded — save your work, fully restart the bot, then hard-refresh (Ctrl+F5).";}}
+  const renderSecList=()=>{
+    const list=Array.isArray(S.tkSections)?S.tkSections:[];
+    document.getElementById("tkSecList").innerHTML=list.length?list.map((s,i)=>`<div class="row"><div><span class="lb">${E(s.emoji||"🎫")} ${E(s.name)}</span><small>${E(catName(s.categoryId)||"No category")} · ${(s.adminRoles||[]).length} staff · ${s.enabled===false?"disabled":"enabled"}</small></div><div style="display:flex;gap:8px"><button class="btn" type="button" data-tk-tg="${i}">${s.enabled===false?"Enable":"Disable"}</button><button class="btn" type="button" data-tk-del="${i}">Delete</button></div></div>`).join(""):`<p class="empty">No sections yet. Add the first one below — without sections members cannot open tickets.</p>`;
+    host.querySelectorAll("[data-tk-del]").forEach(b=>b.onclick=async()=>{S.tkSections.splice(+b.dataset.tkDel,1);chk();renderSecList();await saveState()});
+    host.querySelectorAll("[data-tk-tg]").forEach(b=>b.onclick=async()=>{const it=S.tkSections[+b.dataset.tkTg];if(it){it.enabled=it.enabled===false?true:false;chk();renderSecList();await saveState()}});
+  };
+  renderSecList();
+  ddFill("tkSecRoles",(window.__VELA_ROLES||[]).map(r=>({v:String(r.id),label:String(r.name)})),[]);
+  document.getElementById("tkSecAdd").onclick=async()=>{
+    const name=document.getElementById("tkSecName").value.trim();
+    const categoryId=document.getElementById("tkSecCat").value;
+    if(!name){toast("Section name is required.",true);return}
+    if(!categoryId){toast("Pick a category for new tickets.",true);return}
+    if(!Array.isArray(S.tkSections))S.tkSections=[];
+    S.tkSections.push({name,emoji:document.getElementById("tkSecEmoji").value.trim()||"🎫",enabled:true,categoryId,adminRoles:[...document.querySelectorAll("#tkSecRoles input:checked")].map(i=>i.value),logChannelId:document.getElementById("tkSecLog").value,imageUrl:document.getElementById("tkSecImg").value.trim()});
+    chk();renderSecList();
+    document.getElementById("tkSecName").value="";document.getElementById("tkSecEmoji").value="";document.getElementById("tkSecImg").value="";ddFill("tkSecRoles",(window.__VELA_ROLES||[]).map(r=>({v:String(r.id),label:String(r.name)})),[]);
+    await saveState();
+  };
+  let tkCustEdit=null;
+  const renderCustList=()=>{
+    const list=Array.isArray(S.tkCustomBtns)?S.tkCustomBtns:[];
+    document.getElementById("tkCustList").innerHTML=list.length?list.map((x,i)=>`<div class="row"><div><span class="lb">${E(x.emoji||"")} ${E(x.label)}</span><small>🔗 ${E(x.url||"no link")} · ${x.enabled===false?"disabled":"enabled"}</small></div><div style="display:flex;gap:8px"><button class="btn" type="button" data-tk-ctg="${i}">${x.enabled===false?"Enable":"Disable"}</button><button class="btn" type="button" data-tk-ced="${i}">Edit</button><button class="btn" type="button" data-tk-cdel="${i}">Delete</button></div></div>`).join(""):`<p class="empty">No custom items yet. Add link buttons below.</p>`;
+    host.querySelectorAll("[data-tk-cdel]").forEach(b=>b.onclick=async()=>{S.tkCustomBtns.splice(+b.dataset.tkCdel,1);if(tkCustEdit===+b.dataset.tkCdel)tkCustReset();chk();renderCustList();await saveState()});
+    host.querySelectorAll("[data-tk-ctg]").forEach(b=>b.onclick=async()=>{const it=S.tkCustomBtns[+b.dataset.tkCtg];if(it){it.enabled=it.enabled===false?true:false;chk();renderCustList();await saveState()}});
+    host.querySelectorAll("[data-tk-ced]").forEach(b=>b.onclick=()=>{
+      const it=S.tkCustomBtns[+b.dataset.tkCed];if(!it)return;tkCustEdit=+b.dataset.tkCed;
+      document.getElementById("tkCustName").value=it.label||"";
+      document.getElementById("tkCustEmoji").value=it.emoji||"";
+      document.getElementById("tkCustUrl").value=it.url||"";
+      document.getElementById("tkCustAdd").textContent="Save item";document.getElementById("tkCustCancel").hidden=false;
+    });
+  };
+  const tkCustReset=()=>{tkCustEdit=null;["tkCustName","tkCustEmoji","tkCustUrl"].forEach(id=>document.getElementById(id).value="");document.getElementById("tkCustAdd").textContent="Add item";document.getElementById("tkCustCancel").hidden=true};
+  renderCustList();
+  document.getElementById("tkCustCancel").onclick=tkCustReset;
+  document.getElementById("tkCustAdd").onclick=async()=>{
+    const label=document.getElementById("tkCustName").value.trim().slice(0,80);
+    if(!label){toast("Label is required.",true);return}
+    const url=document.getElementById("tkCustUrl").value.trim();
+    if(!/^https?:\/\//i.test(url)){toast("Link must start with http(s)://.",true);return}
+    if(!Array.isArray(S.tkCustomBtns))S.tkCustomBtns=[];
+    const item={id:tkCustEdit!==null&&S.tkCustomBtns[tkCustEdit]?S.tkCustomBtns[tkCustEdit].id:("c"+Date.now().toString(36)+Math.floor(Math.random()*46656).toString(36)),label,emoji:document.getElementById("tkCustEmoji").value.trim().slice(0,20),enabled:tkCustEdit!==null&&S.tkCustomBtns[tkCustEdit]?S.tkCustomBtns[tkCustEdit].enabled!==false:true,kind:"button",type:"link",commands:[],url,timeoutMinutes:10,name:""};
+    if(tkCustEdit!==null&&S.tkCustomBtns[tkCustEdit])S.tkCustomBtns[tkCustEdit]=item;else S.tkCustomBtns.push(item);
+    chk();renderCustList();tkCustReset();
+    await saveState();
+  };
+  document.getElementById("tkPost").onclick=async()=>{
+    const chId=S.tkPanelCh||"";
+    if(!chId){toast("Pick a panel channel first.",true);return}
+    const btn=document.getElementById("tkPost");btn.disabled=true;
+    try{
+      if((await saveState())!==true)throw new Error("could not save settings");
+      const r=await window.__velaFetch("/api/vela/tickets/post",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({channelId:S.tkPanelCh||chId})});
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok||!d.success)throw new Error((d&&d.error)||"post failed");
+      toast("Panel posted"+(d.channel?" to "+d.channel:"")+".");
+    }catch(e){toast("Not posted: "+(e.message||e),true)}
+    btn.disabled=false;
+  };
+  window.__velaFetch("/api/vela/ticket-stats").then(r=>r.json()).then(d=>{
+    const list=d.staff||[];
+    document.getElementById("tkStats").innerHTML=list.length?`<table class="tkt"><tr><th>#</th><th>Staff</th><th>Received</th><th>Finished</th><th>Points</th></tr>${list.map((s,i)=>`<tr><td>${i+1}</td><td>${E(s.userTag||s.userId)}</td><td>${s.received}</td><td>${s.finished}</td><td><b>${s.points}</b></td></tr>`).join("")}</table><p class="empty" style="padding:12px 0 6px">Points = received × 1 + finished × 2</p>`:`<p class="empty">No ticket activity yet.</p>`;
+  }).catch(()=>{document.getElementById("tkStats").innerHTML=`<p class="empty">Could not load stats.</p>`});
+}
+function renderNotifications(host){
+  const chOpts=(cur)=>{const chs=window.__VELA_CHANNELS||[];const norm=s=>String(s||"").replace(/^#/,"").toLowerCase();const n=norm(cur);return `<option value="">No channel</option>`+chs.map(c=>{const sel=(String(cur)===String(c.id)||(n&&n===norm(c.name)))?" selected":"";return`<option value="${E(c.id)}"${sel}>#${E(c.name)}</option>`}).join("")};
+  const roleOpts=(cur)=>{const rs=window.__VELA_ROLES||[];return `<option value="">No mention</option>`+rs.map(r=>`<option value="${E(r.id)}"${String(cur)===String(r.id)?" selected":""}>${E(r.name)}</option>`).join("")};
+  const sw=(k)=>`<div class="sw-w"><span class="sw-st" data-st="${k}">${S[k]?"Enabled":"Disabled"}</span><button class="sw" role="switch" aria-checked="${!!S[k]}" data-k="${k}" aria-label="${k}"></button></div>`;
+  const vars=`<div class="vars">${["{name}","{title}","{link}","{game}"].map(v=>`<span style="font:500 .75rem ui-monospace,Menlo,monospace;padding:3px 9px;border-radius:6px;background:var(--bg3);border:1px solid var(--line);color:var(--acc)">${v}</span>`).join("")}</div>`;
+  const acctRow=(p,a,i)=>`<div class="row"><div><span class="lb">${E(a.name||a.id||a.login||a.slug||"?")}</span><small>${E(a.id||a.login||a.slug||"")}</small></div><div style="display:flex;gap:8px"><button class="btn" type="button" data-nt-tg="${p}:${i}">${a.enabled===false?"Enable":"Disable"}</button><button class="btn" type="button" data-nt-del="${p}:${i}">Delete</button></div></div>`;
+  host.innerHTML=`
+  <div class="card"><h2>YouTube</h2>
+    <div class="row"><div><span class="lb">Enable YouTube alerts</span><small>New uploads via channel RSS — no API key needed.</small></div>${sw("ntYtOn")}</div>
+    <div class="row"><div><span class="lb">Accounts</span><small>Channel ID starts with UC…</small></div></div><div id="ntYtList"></div>
+    <div class="row"><div><label for="ntYtId">Channel ID</label></div><input class="in" id="ntYtId" type="text" placeholder="UC…"></div>
+    <div class="row"><div><label for="ntYtName">Display name</label><small>Optional.</small></div><input class="in" id="ntYtName" type="text"></div>
+    <div class="row"><div></div><button class="btn p" type="button" id="ntYtAdd">Add channel</button></div>
+    <div class="row"><div><label for="ntYtCh">Discord channel</label></div><select class="in" id="ntYtCh" data-k="ntYtCh">${chOpts(S.ntYtCh)}</select></div>
+    <div class="row"><div><label for="ntYtRole">Mention role</label></div><select class="in" id="ntYtRole" data-k="ntYtRole">${roleOpts(S.ntYtRole)}</select></div>
+    <div class="row stack"><div><label for="ntYtTpl">Message</label></div><textarea id="ntYtTpl" data-k="ntYtTpl" rows="2">${E(S.ntYtTpl||"")}</textarea>${vars}</div>
+    <div class="row"><div><label for="ntYtMin">Check every (minutes)</label><small>2–60.</small></div><input class="in" id="ntYtMin" data-k="ntYtMin" type="number" min="2" max="60" value="${E(S.ntYtMin??10)}"></div>
+  </div>
+  <div class="card"><h2>Twitch</h2>
+    <div class="row"><div><span class="lb">Enable Twitch alerts</span><small>Goes-live detection via Twitch API.</small></div>${sw("ntTwOn")}</div>
+    <div class="row"><div><label for="ntTwId">Client ID</label><small>From your Twitch app.</small></div><input class="in" id="ntTwId" data-k="ntTwId" type="text" value="${E(S.ntTwId||"")}"></div>
+    <div class="row"><div><label for="ntTwSecret">Client Secret</label></div><input class="in" id="ntTwSecret" data-k="ntTwSecret" type="password" value="${E(S.ntTwSecret||"")}" autocomplete="off"></div>
+    <div class="row"><div><span class="lb">Accounts</span><small>Streamer login names.</small></div></div><div id="ntTwList"></div>
+    <div class="row"><div><label for="ntTwLogin">Login</label></div><input class="in" id="ntTwLogin" type="text" placeholder="streamer"></div>
+    <div class="row"><div><label for="ntTwName">Display name</label><small>Optional.</small></div><input class="in" id="ntTwName" type="text"></div>
+    <div class="row"><div></div><button class="btn p" type="button" id="ntTwAdd">Add channel</button></div>
+    <div class="row"><div><label for="ntTwCh">Discord channel</label></div><select class="in" id="ntTwCh" data-k="ntTwCh">${chOpts(S.ntTwCh)}</select></div>
+    <div class="row"><div><label for="ntTwRole">Mention role</label></div><select class="in" id="ntTwRole" data-k="ntTwRole">${roleOpts(S.ntTwRole)}</select></div>
+    <div class="row stack"><div><label for="ntTwTpl">Message</label></div><textarea id="ntTwTpl" data-k="ntTwTpl" rows="2">${E(S.ntTwTpl||"")}</textarea>${vars}</div>
+    <div class="row"><div><label for="ntTwMin">Check every (minutes)</label><small>2–60.</small></div><input class="in" id="ntTwMin" data-k="ntTwMin" type="number" min="2" max="60" value="${E(S.ntTwMin??3)}"></div>
+  </div>
+  <div class="card"><h2>Kick</h2>
+    <div class="row"><div><span class="lb">Enable Kick alerts</span><small>Goes-live detection, no key needed.</small></div>${sw("ntKkOn")}</div>
+    <div class="row"><div><span class="lb">Accounts</span><small>Channel slugs.</small></div></div><div id="ntKkList"></div>
+    <div class="row"><div><label for="ntKkSlug">Slug</label></div><input class="in" id="ntKkSlug" type="text" placeholder="streamer"></div>
+    <div class="row"><div><label for="ntKkName">Display name</label><small>Optional.</small></div><input class="in" id="ntKkName" type="text"></div>
+    <div class="row"><div></div><button class="btn p" type="button" id="ntKkAdd">Add channel</button></div>
+    <div class="row"><div><label for="ntKkCh">Discord channel</label></div><select class="in" id="ntKkCh" data-k="ntKkCh">${chOpts(S.ntKkCh)}</select></div>
+    <div class="row"><div><label for="ntKkRole">Mention role</label></div><select class="in" id="ntKkRole" data-k="ntKkRole">${roleOpts(S.ntKkRole)}</select></div>
+    <div class="row stack"><div><label for="ntKkTpl">Message</label></div><textarea id="ntKkTpl" data-k="ntKkTpl" rows="2">${E(S.ntKkTpl||"")}</textarea>${vars}</div>
+    <div class="row"><div><label for="ntKkMin">Check every (minutes)</label><small>2–60.</small></div><input class="in" id="ntKkMin" data-k="ntKkMin" type="number" min="2" max="60" value="${E(S.ntKkMin??3)}"></div>
+  </div>`;
+  const renderLists=()=>{
+    const y=Array.isArray(S.ntYtAccts)?S.ntYtAccts:[];
+    document.getElementById("ntYtList").innerHTML=y.length?y.map((a,i)=>acctRow("yt",a,i)).join(""):`<p class="empty">No YouTube channels yet.</p>`;
+    const t=Array.isArray(S.ntTwAccts)?S.ntTwAccts:[];
+    document.getElementById("ntTwList").innerHTML=t.length?t.map((a,i)=>acctRow("tw",a,i)).join(""):`<p class="empty">No Twitch channels yet.</p>`;
+    const k=Array.isArray(S.ntKkAccts)?S.ntKkAccts:[];
+    document.getElementById("ntKkList").innerHTML=k.length?k.map((a,i)=>acctRow("kk",a,i)).join(""):`<p class="empty">No Kick channels yet.</p>`;
+    host.querySelectorAll("[data-nt-del]").forEach(b=>b.onclick=async()=>{const[p,i]=b.dataset.ntDel.split(":");const arr=p==="yt"?S.ntYtAccts:p==="tw"?S.ntTwAccts:S.ntKkAccts;arr.splice(+i,1);chk();renderLists();await saveState()});
+    host.querySelectorAll("[data-nt-tg]").forEach(b=>b.onclick=async()=>{const[p,i]=b.dataset.ntTg.split(":");const arr=p==="yt"?S.ntYtAccts:p==="tw"?S.ntTwAccts:S.ntKkAccts;const it=arr[+i];if(it){it.enabled=it.enabled===false?true:false;chk();renderLists();await saveState()}});
+  };
+  renderLists();
+  document.getElementById("ntYtAdd").onclick=async()=>{
+    const id=document.getElementById("ntYtId").value.trim();
+    if(!id){toast("Channel ID is required.",true);return}
+    if(!Array.isArray(S.ntYtAccts))S.ntYtAccts=[];
+    S.ntYtAccts.push({id,name:document.getElementById("ntYtName").value.trim().slice(0,100),enabled:true});
+    chk();renderLists();document.getElementById("ntYtId").value="";document.getElementById("ntYtName").value="";
+    await saveState();
+  };
+  document.getElementById("ntTwAdd").onclick=async()=>{
+    const login=document.getElementById("ntTwLogin").value.trim().toLowerCase();
+    if(!login){toast("Login is required.",true);return}
+    if(!Array.isArray(S.ntTwAccts))S.ntTwAccts=[];
+    S.ntTwAccts.push({login,name:document.getElementById("ntTwName").value.trim().slice(0,100),enabled:true});
+    chk();renderLists();document.getElementById("ntTwLogin").value="";document.getElementById("ntTwName").value="";
+    await saveState();
+  };
+  document.getElementById("ntKkAdd").onclick=async()=>{
+    const slug=document.getElementById("ntKkSlug").value.trim().toLowerCase();
+    if(!slug){toast("Slug is required.",true);return}
+    if(!Array.isArray(S.ntKkAccts))S.ntKkAccts=[];
+    S.ntKkAccts.push({slug,name:document.getElementById("ntKkName").value.trim().slice(0,100),enabled:true});
+    chk();renderLists();document.getElementById("ntKkSlug").value="";document.getElementById("ntKkName").value="";
+    await saveState();
+  };
+}
+function cardHTML(title,fields,mod){
+  const mi=(mod&&P[mod]&&P[mod].i)||"gear", md=(mod&&P[mod]&&P[mod].d)||"";
+  const fm=fields.find(f=>f[0]==="sw");
+  const rest=fields.filter(f=>f!==fm);
+  const btns=rest.filter(f=>f[0]==="btn"), rest2=rest.filter(f=>f[0]!=="btn");
+  const open=!fm||!!S[fm[1]];
+  const icon=`<span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">${I[mi]||""}</svg></span>`;
+  const head=fm
+    ?`<div class="mod-h">${icon}<div style="flex:1;min-width:0"><b id="m-${fm[1]}">${title}</b><small style="color:var(--mut)">${md}</small></div><div class="sw-w"><span class="sw-st" data-st="${fm[1]}">${open?"Enabled":"Disabled"}</span><button class="sw" role="switch" aria-labelledby="m-${fm[1]}" aria-checked="${open}" data-k="${fm[1]}"></button></div></div>`
+    :`<div class="mod-h">${icon}<div style="flex:1;min-width:0"><b>${title}</b>${md?`<small style="color:var(--mut)">${md}</small>`:""}</div></div>`;
+  const inner=rest2.length<=4?rest2.map(fld).join(""):rest2.slice(0,4).map(fld).join("")+`<div class="adv" data-adv><button type="button" aria-expanded="false"><span>Advanced settings (${rest2.length-4})</span><span aria-hidden="true">+</span></button><div class="adv-body"><div>${rest2.slice(4).map(fld).join("")}</div></div></div>`;
+  return`<div class="card${open?" open":""}"${fm?` data-master="${fm[1]}"`:""}>${head}<div class="mod-b"><div>${inner}${btns.map(fld).join("")}</div></div></div>`;
+}
+function healthHTML(k){if(!["moderation","automod","security"].includes(k))return"";return`<div class="health" role="status">Monitor-only first: new rules log what they would do before punishing. Bypass roles exempt trusted staff. No system promises full protection.</div>`}
+let tplTab="browse",tplQ="",tplCat="All",tplTier="All",tplData={builtins:[],customs:[],hasBackup:false},tplApplyId=null;
+async function tplLoad(host){
+  try{
+    const r=await window.__velaFetch("/api/templates");
+    tplData=await r.json();
+  }catch(e){tplData={builtins:[],customs:[],hasBackup:false}}
+  tplRender(host);
+}
+function tplAll(){return tplData.builtins.concat(tplData.customs)}
+function tplFiltered(){
+  const q=tplQ.trim().toLowerCase();
+  return tplAll().filter(t=>{
+    if(tplCat!=="All"&&t.category!==tplCat)return false;
+    if(tplTier!=="All"&&t.tier!==tplTier)return false;
+    if(q&&!(String(t.name).toLowerCase().includes(q)||String(t.desc||"").toLowerCase().includes(q)))return false;
+    return true;
+  });
+}
+function tplCard(t){
+  const ch=(t.categories||[]).reduce((n,c)=>n+(c.channels||[]).length,0);
+  return`<div class="tpl"><b>${E(t.name)}</b><small>${E(t.desc||"")}</small><span class="tpl-meta">${(t.categories||[]).length} categories • ${ch} channels • ${(t.roles||[]).length} roles • by ${E(t.author||"Vela")} • ${E(t.tier||"Free")}</span><div class="tpl-ft">${t.custom?`<button class="btn" type="button" data-tpl-del="${E(t.id)}">Delete</button>`:""}<button class="btn p" type="button" data-tpl-apply="${E(t.id)}">Apply</button></div></div>`;
+}
+function tplRender(host){
+  const cats=["All","Gaming","Community","Business","Education","Creative","Other"];
+  const list=tplFiltered();
+  host.innerHTML=`
+  <div class="card"><h2>Templates</h2>
+    <div class="tabs" role="tablist" aria-label="Templates">
+      <button type="button" role="tab" data-ttab="browse" aria-selected="${tplTab==="browse"}">Browse</button>
+      <button type="button" role="tab" data-ttab="builder" aria-selected="${tplTab==="builder"}">Builder</button>
+    </div>
+    <div data-tpane="browse" ${tplTab==="browse"?"":"hidden"}>
+      <div class="tpl-tools"><input type="search" id="tplQ" placeholder="Search templates…" aria-label="Search templates" value="${E(tplQ)}"></div>
+      <div class="fchips">${cats.map(c=>`<button type="button" class="fchip" data-tcat="${c}" aria-pressed="${tplCat===c}">${c==="All"?"All categories":c}</button>`).join("")}<select class="tpl-tier" id="tplTier" aria-label="Tier"><option${tplTier==="All"?" selected":""}>All</option><option${tplTier==="Free"?" selected":""}>Free</option><option${tplTier==="Premium"?" selected":""}>Premium</option></select></div>
+      ${list.length?`<div class="tpl-grid">${list.map(tplCard).join("")}</div>`:`<div class="tpl-empty"><b>No templates match your filters.</b><p>Try a different search, or clear your filters to see everything.</p><div style="margin-top:12px"><button class="btn" type="button" data-tpl-clear>Clear filters</button></div></div>`}
+    </div>
+    <div data-tpane="builder" ${tplTab==="builder"?"":"hidden"}>
+      <div class="row stack"><div><label for="tplName">Save current structure</label><small>Snapshots this server's roles, categories and channels as a reusable template.</small></div><div style="display:flex;gap:8px"><input class="in" id="tplName" type="text" placeholder="My template" style="flex:1"><button class="btn p" type="button" data-tpl-save>Save</button></div></div>
+      ${tplData.customs.length?`<div class="tpl-grid">${tplData.customs.map(tplCard).join("")}</div>`:`<div class="tpl-empty"><b>No custom templates yet.</b><p>Save your current structure above to reuse it later.</p></div>`}
+      ${tplData.hasBackup?`<div class="row"><div><span class="lb">Restore last backup</span><small>Recreates roles and channels from the snapshot taken before the last apply.</small></div><button class="btn" type="button" data-tpl-restore>Restore</button></div>`:""}
+    </div>
+  </div>
+  <div class="movl" id="tplModal" hidden><div class="mobox" role="dialog" aria-modal="true" aria-labelledby="tplModalTitle">
+    <h2 id="tplModalTitle">This changes your server's structure</h2>
+    <div class="warnbox"><b>Apply creates</b> the categories, channels and roles a template declares. Existing ones with the same name are kept, not duplicated. A backup snapshot is saved first — restore it from the Builder tab if needed.</div>
+    <div class="morow"><button class="btn" type="button" data-tpl-back>Back to overview</button><button class="btn p" type="button" data-tpl-confirm>I understand, continue</button></div>
+  </div></div>`;
+  const q=host.querySelector("#tplQ");
+  if(q){
+    q.addEventListener("input",()=>{tplQ=q.value;const pos=q.selectionStart;tplRender(host);const nq=host.querySelector("#tplQ");if(nq){nq.focus();nq.setSelectionRange(pos,pos)}});
+    if(document.activeElement===q||tplQ){q.focus();const p=q.value.length;try{q.setSelectionRange(p,p)}catch(_){}}
+  }
+  const tier=host.querySelector("#tplTier");
+  if(tier)tier.addEventListener("change",()=>{tplTier=tier.value;tplRender(host)});
+}
+function renderTemplates(host){tplLoad(host)}
+document.addEventListener("click",async e=>{
+  if(cur!=="templates")return;
+  const tab=e.target.closest("[data-ttab]");
+  if(tab&&tab.closest('#pg')){tplTab=tab.dataset.ttab;const host=$("#pg");if(host&&cur==="templates")tplRender(host);return}
+  const cat=e.target.closest("[data-tcat]");
+  if(cat){tplCat=cat.dataset.tcat;const host=$("#pg");if(host&&cur==="templates")tplRender(host);return}
+  if(e.target.closest("[data-tpl-clear]")){tplQ="";tplCat="All";tplTier="All";const host=$("#pg");if(host&&cur==="templates")tplRender(host);return}
+  const ap=e.target.closest("[data-tpl-apply]");
+  if(ap){tplApplyId=ap.dataset.tplApply;const m=$("#tplModal");if(m)m.hidden=false;return}
+  if(e.target.closest("[data-tpl-back]")){tplApplyId=null;const m=$("#tplModal");if(m)m.hidden=true;return}
+  if(e.target.closest("[data-tpl-confirm]")){
+    const m=$("#tplModal");if(m)m.hidden=true;
+    if(!tplApplyId)return;
+    toast("Applying template…");
+    try{
+      const r=await window.__velaFetch("/api/templates/apply",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:tplApplyId})});
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok||!d.success)throw new Error((d&&d.error)||"apply failed");
+      toast(d.message||"Template applied.");tplApplyId=null;
+      AUD.unshift({t:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),c:["Applied template"]});chk();
+    }catch(err){toast("Apply failed: "+(err.message||err),true)}
+    return;
+  }
+  if(e.target.closest("[data-tpl-save]")){
+    const inp=$("#tplName");const name=inp?inp.value.trim():"";
+    if(!name){toast("Name your template first.",true);return}
+    try{
+      const r=await window.__velaFetch("/api/templates/save-current",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name})});
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok||!d.success)throw new Error((d&&d.error)||"save failed");
+      toast(d.message||"Template saved.");tplLoad($("#pg"));
+    }catch(err){toast("Save failed: "+(err.message||err),true)}
+    return;
+  }
+  if(e.target.closest("[data-tpl-restore]")){
+    if(!confirm("Restore the last backup snapshot? Missing roles and channels will be recreated."))return;
+    try{
+      const r=await window.__velaFetch("/api/templates/restore",{method:"POST"});
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok||!d.success)throw new Error((d&&d.error)||"restore failed");
+      toast(d.message||"Backup restored.");
+    }catch(err){toast("Restore failed: "+(err.message||err),true)}
+    return;
+  }
+  const del=e.target.closest("[data-tpl-del]");
+  if(del){
+    if(!confirm("Delete this custom template?"))return;
+    try{
+      const r=await window.__velaFetch("/api/templates/custom/"+encodeURIComponent(del.dataset.tplDel),{method:"DELETE"});
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok||!d.success)throw new Error((d&&d.error)||"delete failed");
+      toast("Template deleted.");tplLoad($("#pg"));
+    }catch(err){toast("Delete failed: "+(err.message||err),true)}
+    return;
+  }
+});
+/* Logging cards + smart filter tabs: counters update live, Manage opens the 5-field dialog. */
+let __logCat="Moderation";
+function logCatCount(c){const ev=LOG_TYPES.filter(t=>t[2]===c);return{on:ev.filter(t=>!!S["lgon_"+t[0]]).length,total:ev.length};}
+function logTabsHTML(){return`<div class="logtabs" id="logTabs" role="tablist" aria-label="Filter logs by category">`+LOG_TAB_ORDER.map(c=>{const n=logCatCount(c);return`<button type="button" class="logtab" role="tab" data-logtab="${c}" aria-pressed="${__logCat===c}"><svg viewBox="0 0 24 24" aria-hidden="true">${I[LOG_ICONS[c]]||""}</svg>${c} <span class="cnt" data-cnt="${c}">${n.on}/${n.total}</span></button>`}).join("")+`</div>`;}
+function logCardsHTML(){return`<div class="logcards" id="logCards">`+LOG_TYPES.map(t=>{const k=t[0],cat=t[2],ek="lgon_"+k,on=!!S[ek];return`<div class="logcard"${__logCat===cat?"":" hidden"} data-cat="${cat}"><div class="lc-top"><span class="lic"><svg viewBox="0 0 24 24" aria-hidden="true">${I[LOG_ICONS[cat]]||""}</svg></span><div class="sw-w"><span class="sw-st" data-st="${ek}">${on?"Enabled":"Disabled"}</span><button class="sw" role="switch" aria-checked="${on}" data-k="${ek}" aria-label="${E(t[1])}"></button></div></div><b>${E(t[1])}</b><small>${E(LOG_DESC[k]||"")}</small><button type="button" class="lmanage" data-logmanage="${k}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>Manage</button></div>`}).join("")+`</div>`;}
+function updateLogTabs(){LOG_TAB_ORDER.forEach(c=>{const el=document.querySelector(`[data-cnt="${c}"]`);if(el){const n=logCatCount(c);el.textContent=n.on+"/"+n.total;}});document.querySelectorAll("[data-logtab]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.logtab===__logCat));document.querySelectorAll("#logCards .logcard").forEach(card=>{card.hidden=card.dataset.cat!==__logCat;});}
+let lmEv=null;
+function openLogManage(k){lmEv=k;const t=LOG_TYPES.find(x=>x[0]===k);const cat=t?t[2]:"";
+document.getElementById("lmTitle").textContent=t?t[1]:"Log event";
+document.getElementById("lmSub").textContent=(cat?cat+" — ":"")+(LOG_DESC[k]||"");
+const chs=window.__VELA_CHANNELS||[];const cur=String(S["lgch_"+k]??"");const norm=s=>String(s||"").replace(/^#/,"").toLowerCase();const n=norm(cur);
+document.getElementById("lmChannel").innerHTML=`<option value="">No channel</option>`+chs.map(c=>{const sel=(cur===String(c.id)||(n&&n===norm(c.name)))?" selected":"";return`<option value="${E(c.id)}"${sel}>#${E(c.name)}</option>`}).join("");
+const co=(/^#[0-9a-fA-F]{6}$/.test(S["lgco_"+k]||"")?S["lgco_"+k]:"#a9b9d8");
+document.getElementById("lmColor").value=co;document.getElementById("lmColorHex").textContent=co.toUpperCase();
+ddFill("lmDdPing",(window.__VELA_ROLES||[]).map(r=>({v:String(r.id),label:String(r.name)})),S["lgping_"+k]||[]);
+ddFill("lmDdIgCh",(window.__VELA_CHANNELS||[]).map(c=>({v:String(c.id),label:"#"+c.name})),S["lgigch_"+k]||[]);
+ddFill("lmDdIgRole",(window.__VELA_ROLES||[]).map(r=>({v:String(r.id),label:String(r.name)})),S["lgigroles_"+k]||[]);
+document.getElementById("logModal").hidden=false;}
+function closeLogManage(){lmEv=null;document.getElementById("logModal").hidden=true;}
+/* Overview live data: Server Statistics (30s refresh) + Server Analytics charts. */
+function anaEmpty(hint){return`<div class="aempty"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><b>Not collected yet</b><p>${E(hint)}</p></div>`;}
+function anaBars(vals,labels,every){const mx=Math.max(1,...vals);const showEvery=every||(vals.length>10?5:1);return`<div class="abars">`+vals.map((v,i)=>`<div class="abar" style="height:${Math.max(3,Math.round(v/mx*100))}%" title="${E(labels[i])}: ${v.toLocaleString("en-US")}"></div>`).join("")+`</div><div class="ax">`+vals.map((_,i)=>`<span>${i%showEvery===0?E(labels[i]):""}</span>`).join("")+`</div>`;}
+function anaPairBars(a,b,labels){const mx=Math.max(1,...a,...b);return`<div class="abars">`+a.map((v,i)=>`<div class="agroup"><i class="aj" style="height:${Math.max(3,Math.round(v/mx*100))}%" title="${E(labels[i])} joins: ${v}"></i><i class="al" style="height:${Math.max(3,Math.round(((b[i]||0)/mx)*100))}%" title="${E(labels[i])} leaves: ${b[i]||0}"></i></div>`).join("")+`</div><div class="ax">`+a.map((_,i)=>`<span>${E(labels[i])}</span>`).join("")+`</div><div class="alegend"><i class="dotj"></i>Joins<i class="dotl"></i>Leaves</div>`;}
+function anaPanel(icon,color,title,sub,extra,body){return`<div class="apanel${extra&&extra.wide?" wide":""}"><div class="ap-h"><span class="adot" style="--d:${color}"><svg viewBox="0 0 24 24" aria-hidden="true">${I[icon]||""}</svg></span><div><b>${E(title)}</b><small>${E(sub)}</small>${extra&&extra.delta?extra.delta:""}</div></div>${body}</div>`;}
+function anaDelta(curV,prevV){if(!window.__anaCmp)return"";if(prevV>0){const p=Math.round((curV-prevV)/prevV*100);return`<small class="delta">${p>=0?"▲ +":"▼ "}${p}% vs previous</small>`;}if(curV>0)return`<small class="delta">New activity this period</small>`;return"";}
+const HLBL=Array.from({length:24},(_,h)=>{const n=h%12||12;return n+(h<12?"a":"p");});
+function anaSum(a){return a.reduce((x,y)=>x+(y||0),0);}
+async function loadServerStats(){let st=0;try{const r=await window.__velaFetch("/api/vela/server-stats");st=r.status;const d=await r.json();if(cur!=="overview")return;const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};const f=n=>((n==null?0:n)).toLocaleString("en-US");
+set("ss-members",f(d.members));set("ss-members-sub",(d.net7d>=0?"+":"")+f(d.net7d)+" net over 7 days");
+set("ss-messages",f(d.messages));set("ss-messages-sub","across all channels");
+set("ss-voice",f(d.voiceMinutes));set("ss-voice-sub","member-minutes in voice");
+set("ss-mods",f(d.modActions));set("ss-mods-sub","warns + punishments");
+set("ss-modules",f(d.activeModules));set("ss-modules-sub","of "+f(d.totalModules)+" available");}catch(e){const msg=st===404?"Restart the bot to enable":"Could not load";["ss-members-sub","ss-messages-sub","ss-voice-sub","ss-mods-sub","ss-modules-sub"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=msg;});}}
+async function loadAnalytics(){const host=document.getElementById("anaGrid");if(!host)return;const period=window.__anaPeriod||7;
+let st=0;try{const r=await window.__velaFetch("/api/vela/analytics?period="+period);st=r.status;const d=await r.json();if(cur!=="overview"||!document.getElementById("anaGrid"))return;
+const jSum=anaSum(d.joins),lSum=anaSum(d.leaves),mSum=anaSum(d.messages),vSum=anaSum(d.voiceMinutes);
+const memBody=(jSum||lSum)?anaPairBars(d.joins,d.leaves,d.labels):anaEmpty("No joins or leaves recorded in this period.");
+const msgBody=mSum?anaBars(d.messages,d.labels):anaEmpty("No messages recorded in this period.");
+const voxBody=vSum?anaBars(d.voiceMinutes,d.labels):anaEmpty("Voice activity appears here once members start using voice channels.");
+const bc=d.busiestChannels||[];const bcTot=bc.reduce((x,r)=>x+(r.count||0),0);
+const chanBody=bc.length?(`<div class="mblist">`+bc.map((r,i)=>{const pc=bcTot?Math.round(r.count/bcTot*100):0;const nm=r.name?("#"+r.name):("…"+String(r.id).slice(-6));return`<div class="mbrow"><span class="mbt">${i+1}. ${E(nm)}</span><span class="mbb"><i style="width:${pc}%"></i></span><b>${r.count.toLocaleString("en-US")}</b></div>`}).join("")+`</div>`):anaEmpty("Channel activity appears here as your server is used.");
+const hrs=d.hours||[];const hSum=anaSum(hrs);
+const hourBody=hSum?anaBars(hrs,HLBL,3):anaEmpty("Hourly activity appears here once members start chatting.");
+const mb=d.modBreakdown||[];const mbTot=mb.reduce((x,r)=>x+(r.count||0),0);
+const mbBody=mb.length?(`<div class="mblist">`+mb.map(r=>{const lb=String(r.type||"other");const pc=mbTot?Math.round(r.count/mbTot*100):0;return`<div class="mbrow"><span class="mbt">${E(lb.charAt(0).toUpperCase()+lb.slice(1))}</span><span class="mbb"><i style="width:${pc}%"></i></span><b>${r.count.toLocaleString("en-US")}</b></div>`}).join("")+`</div>`):anaEmpty("No moderation actions recorded yet.");
+const topRows=(d.topMembers||[]).map(m=>{const nm=m.tag||("…"+String(m.userId).slice(-6));const init=String(m.tag||"?").charAt(0).toUpperCase();return`<div class="arow"><span class="aav">${E(init)}</span><span class="anm">${E(nm)}</span><small>${m.messages.toLocaleString("en-US")} messages · ${m.voiceMinutes.toLocaleString("en-US")} min voice</small></div>`}).join("");
+const topBody=topRows||anaEmpty("No member activity recorded yet.");
+host.innerHTML=
+anaPanel("users","var(--acc)","Member Activity","Daily joins and leaves over the selected period",{delta:anaDelta(jSum+lSum,d.prev.joins+d.prev.leaves)},memBody)+
+anaPanel("chat","var(--acc)","Messages Sent","Daily message activity across all channels",{delta:anaDelta(mSum,d.prev.messages)},msgBody)+
+anaPanel("clock","var(--acc)","Activity by hour","When your members are actually online (UTC)",null,hourBody)+
+anaPanel("shield","var(--acc)","Moderation breakdown","Actions by type in this period",null,mbBody)+
+anaPanel("bolt","var(--acc)","Voice activity","Member-minutes spent in voice channels",{delta:anaDelta(vSum,d.prev.voiceMinutes)},voxBody)+
+anaPanel("list","var(--acc)","Busiest channels","Where the conversation happens",null,chanBody)+
+anaPanel("users","var(--acc)","Most active members","Ranked by messages sent",{wide:true},topBody);
+}catch(e){const hint=st===404?"New endpoints unavailable — restart the bot, then retry.":"Could not load analytics.";host.innerHTML=`<p class="empty">${hint}</p><p style="text-align:center;padding-bottom:16px"><button class="btn" type="button" data-anaretry>Retry</button></p>`;}}
+function startOv(){loadServerStats();loadAnalytics();if(window.__ovT)clearInterval(window.__ovT);window.__ovT=setInterval(()=>{if(cur!=="overview"||document.hidden)return;loadServerStats();loadAnalytics();},30000);}
+function stopOv(){if(window.__ovT){clearInterval(window.__ovT);window.__ovT=null;}}
+/* Security page as Logging-style cards + smart tabs + one reusable modal.
+   Same keys, same saveState, no backend changes. */
+const SEC_TABS=[["antiraid","Anti-Raid"],["joindates","Anti-Join Dates"],["antinuke","Anti-Nuke"],["punish","Punishments"],["bypass","Bypass Roles"],["words","Blocked Words"],["commands","Commands"]];
+const SEC_TAB_ICONS={antiraid:"shield",joindates:"clock",antinuke:"lock",punish:"bolt",bypass:"users",words:"slash",commands:"code"};
+let __secTab="antiraid",__secModalId=null,__secPending=null,__secOpener=null,__secWords=[];
+const SEC_CARDS=[
+{id:"antiraid",tab:"antiraid",icon:"shield",title:"Anti-Raid Basic Protection",desc:"Act when many accounts join quickly.",keys:["scRaid"],get:()=>!!S.scRaid,setOn:()=>{S.scRaid=1;},setOff:()=>{S.scRaid=0;},mdesc:"Limits how many new accounts can join in a short window, and can restrict very new accounts. Turn it on, press Save, and it protects with your current thresholds.",fields:[]},
+{id:"joindates",tab:"joindates",icon:"clock",title:"Anti-Join Dates",desc:"Block accounts that are too new to join.",keys:["sysJoinMinAge","sysJoinAllowedAge","sysJoinReason"],get:()=>+S.sysJoinMinAge>0,setOn:()=>{},setOff:()=>{S.sysJoinMinAge=0;},mdesc:"",fields:[["nm","sysJoinMinAge","Blocked account age (days)","Accounts newer than this cannot join (/antijoin). 0 = off. Recommended: 7."],["nm","sysJoinAllowedAge","Allowed account age, optional (days)","Accounts older than this always join. 0 or empty = off – not required."],["tx","sysJoinReason","Default block message","Shown as the kick reason for blocked accounts."]]},
+{id:"antinuke",tab:"antinuke",icon:"lock",title:"Anti-Nuke Protection",desc:"Stop sudden channel, role and webhook abuse.",keys:["sysAntiCreate","sysAntiDelete","sysAntiPerms","sysAntiWebhook","sysAntiBots","sysAntiSpam","sysAntiLink","sysAntiJoin"],get:()=>["sysAntiCreate","sysAntiDelete","sysAntiPerms","sysAntiWebhook","sysAntiBots","sysAntiSpam","sysAntiLink","sysAntiJoin"].some(k=>!!S[k]),setOn:()=>{["sysAntiCreate","sysAntiDelete","sysAntiPerms","sysAntiWebhook","sysAntiBots","sysAntiSpam","sysAntiLink","sysAntiJoin"].forEach(k=>S[k]=1);},setOff:()=>{["sysAntiCreate","sysAntiDelete","sysAntiPerms","sysAntiWebhook","sysAntiBots","sysAntiSpam","sysAntiLink","sysAntiJoin"].forEach(k=>S[k]=0);},mdesc:"Watches for mass channel, role and webhook attacks and stops them automatically.",fields:[],goto:"punish"},
+{id:"pun-ban",tab:"punish",icon:"bolt",title:"Ban Punishment",desc:"العقوبة عند اكتشاف ban غير مصرح.",keys:["sysPunishBan"],get:()=>String(S.sysPunishBan||"none")!=="none",setOn:()=>{},setOff:()=>{S.sysPunishBan="none";},mdesc:"",fields:[["sl","sysPunishBan","Ban Punishment","العقوبة عند اكتشاف ban غير مصرح.",["kick","ban","timeout","strip","none"]]]},
+{id:"pun-kick",tab:"punish",icon:"bolt",title:"Kick Punishment",desc:"العقوبة عند اكتشاف kick غير مصرح.",keys:["sysPunishKick"],get:()=>String(S.sysPunishKick||"none")!=="none",setOn:()=>{},setOff:()=>{S.sysPunishKick="none";},mdesc:"",fields:[["sl","sysPunishKick","Kick Punishment","العقوبة عند اكتشاف kick غير مصرح.",["kick","ban","timeout","strip","none"]]]},
+{id:"pun-chandel",tab:"punish",icon:"bolt",title:"Channel Delete Punishment",desc:"العقوبة عند حذف قنوات.",keys:["sysPunishChanDel"],get:()=>String(S.sysPunishChanDel||"none")!=="none",setOn:()=>{},setOff:()=>{S.sysPunishChanDel="none";},mdesc:"",fields:[["sl","sysPunishChanDel","Channel Delete Punishment","العقوبة عند حذف قنوات.",["kick","ban","timeout","strip","none"]]]},
+{id:"pun-roledel",tab:"punish",icon:"bolt",title:"Role Delete Punishment",desc:"العقوبة عند حذف رولات.",keys:["sysPunishRoleDel"],get:()=>String(S.sysPunishRoleDel||"none")!=="none",setOn:()=>{},setOff:()=>{S.sysPunishRoleDel="none";},mdesc:"",fields:[["sl","sysPunishRoleDel","Role Delete Punishment","العقوبة عند حذف رولات.",["kick","ban","timeout","strip","none"]]]},
+{id:"bypass-1",tab:"bypass",icon:"users",title:"Bypass Role 1",desc:"الرول الأول المعفى من الحماية.",keys:["sysBypassRole1"],get:()=>String(S.sysBypassRole1||"")!=="",setOn:()=>{},setOff:()=>{S.sysBypassRole1="";},mdesc:"",fields:[["role","sysBypassRole1","Bypass Role 1","الرول الأول المعفى من الحماية."]]},
+{id:"bypass-2",tab:"bypass",icon:"users",title:"Bypass Role 2",desc:"الرول الثاني المعفى من الحماية.",keys:["sysBypassRole2"],get:()=>String(S.sysBypassRole2||"")!=="",setOn:()=>{},setOff:()=>{S.sysBypassRole2="";},mdesc:"",fields:[["role","sysBypassRole2","Bypass Role 2","الرول الثاني المعفى من الحماية."]]},
+{id:"bypass-3",tab:"bypass",icon:"users",title:"Bypass Role 3",desc:"الرول الثالث المعفى من الحماية.",keys:["sysBypassRole3"],get:()=>String(S.sysBypassRole3||"")!=="",setOn:()=>{},setOff:()=>{S.sysBypassRole3="";},mdesc:"",fields:[["role","sysBypassRole3","Bypass Role 3","الرول الثالث المعفى من الحماية."]]},
+{id:"blockedwords",tab:"words",icon:"slash",title:"Blocked Words",desc:"Filter forbidden words.",keys:["sysWordFilter","sysWordList"],get:()=>!!S.sysWordFilter,setOn:()=>{S.sysWordFilter=1;},setOff:()=>{S.sysWordFilter=0;},mdesc:"",fields:[["chips","sysWordList","Blocked Words","One word or phrase per line. Add with Enter, remove with ×."]]},
+{id:"cmd-antibots",tab:"commands",icon:"code",cmd:"antibots",title:"/antibots",desc:"تشغيل/إيقاف مانع دخول البوتات",keys:["c_antibots"],get:()=>!!S["c_antibots"],setOn:()=>{S["c_antibots"]=1;},setOff:()=>{S["c_antibots"]=0;},mdesc:"",fields:[]},
+{id:"cmd-anticreate",tab:"commands",icon:"code",cmd:"anticreate",title:"/anticreate",desc:"الحماية من إنشاء القنوات",keys:["c_anticreate"],get:()=>!!S["c_anticreate"],setOn:()=>{S["c_anticreate"]=1;},setOff:()=>{S["c_anticreate"]=0;},mdesc:"",fields:[]},
+{id:"cmd-antidelete",tab:"commands",icon:"code",cmd:"antidelete",title:"/antidelete",desc:"الحماية من حذف القنوات والرولات",keys:["c_antidelete"],get:()=>!!S["c_antidelete"],setOn:()=>{S["c_antidelete"]=1;},setOff:()=>{S["c_antidelete"]=0;},mdesc:"",fields:[]},
+{id:"cmd-antijoin",tab:"commands",icon:"code",cmd:"antijoin",title:"/antijoin",desc:"مانع الانضمام التلقائي",keys:["c_antijoin"],get:()=>!!S["c_antijoin"],setOn:()=>{S["c_antijoin"]=1;},setOff:()=>{S["c_antijoin"]=0;},mdesc:"",fields:[]}
+];
+function secTabCount(t){const cards=SEC_CARDS.filter(c=>c.tab===t);let on=0;cards.forEach(c=>{try{if(c.get())on++}catch(e){}});return{on,total:cards.length};}
+function secTabsHTML(){return`<div class="logtabs" id="secTabs" role="tablist" aria-label="Filter security by category">`+SEC_TABS.map(([id,label])=>{const n=secTabCount(id);return`<button type="button" class="logtab" role="tab" data-sectab="${id}" aria-pressed="${__secTab===id}"><svg viewBox="0 0 24 24" aria-hidden="true">${I[SEC_TAB_ICONS[id]]||""}</svg>${label} <span class="cnt" data-seccnt="${id}">${n.on}/${n.total}</span></button>`}).join("")+`</div>`;}
+function secCardsHTML(){return`<div class="logcards" id="secCards">`+SEC_CARDS.map(c=>{let on=false;try{on=!!c.get()}catch(e){}return`<div class="logcard"${__secTab===c.tab?"":" hidden"} data-scat="${c.tab}"><div class="lc-top"><span class="lic"><svg viewBox="0 0 24 24" aria-hidden="true">${I[c.icon]||""}</svg></span><div class="sw-w"><span class="sw-st" data-sst>${on?"Enabled":"Disabled"}</span><button class="sw" role="switch" aria-checked="${on}" data-sec="${c.id}" aria-label="${E(c.title)}"></button></div></div><b>${E(c.title)}</b><small>${E(c.desc)}</small><button type="button" class="lmanage" data-secmanage="${c.id}"${on?"":" disabled"}><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>Manage</button></div>`}).join("")+`</div>`;}
+function updateSecUI(){SEC_TABS.forEach(([id])=>{const el=document.querySelector(`[data-seccnt="${id}"]`);if(el){const n=secTabCount(id);el.textContent=n.on+"/"+n.total;}});document.querySelectorAll("[data-sectab]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.sectab===__secTab));document.querySelectorAll("#secCards .logcard").forEach(card=>{card.hidden=card.dataset.scat!==__secTab;const sw=card.querySelector("[data-sec]");if(sw){const c=SEC_CARDS.find(x=>x.id===sw.dataset.sec);let on=false;try{on=!!(c&&c.get())}catch(e){}sw.setAttribute("aria-checked",!!on);const st=card.querySelector("[data-sst]");if(st)st.textContent=on?"Enabled":"Disabled";const mg=card.querySelector("[data-secmanage]");if(mg){if(on)mg.removeAttribute("disabled");else mg.setAttribute("disabled","");}}});}
+function setSecTab(id){if(!SEC_TABS.some(t=>t[0]===id))return;__secTab=id;updateSecUI();try{history.replaceState(null,"","#security/"+id)}catch(_){}}
+function secFieldHTML(f){const[t,k,l,h,o]=f;
+if(t==="nm"||t==="tx")return`<div class="row"><div><label for="sm-${k}">${E(l)}</label>${h?`<small>${E(h)}</small>`:""}</div><input class="in" id="sm-${k}" type="${t==="nm"?"number":"text"}" value="${E(S[k]??"")}"></div>`;
+if(t==="sl")return`<div class="row"><div><label for="sm-${k}">${E(l)}</label>${h?`<small>${E(h)}</small>`:""}</div><select class="in" id="sm-${k}">${o.map(x=>`<option${String(S[k])===x?" selected":""}>${x}</option>`).join("")}</select></div>`;
+if(t==="role")return`<div class="row"><div><label for="sm-${k}">${E(l)}</label>${h?`<small>${E(h)}</small>`:""}</div><select class="in" id="sm-${k}"><option value="">No role</option>`+(window.__VELA_ROLES||[]).map(r=>`<option value="${E(r.id)}"${String(S[k])===String(r.id)?" selected":""}>${E(r.name)}</option>`).join("")+`</select></div>`;
+if(t==="chips")return`<div class="row stack"><div><label>${E(l)}</label>${h?`<small>${E(h)}</small>`:""}</div><div class="chips" id="secWordChips"></div><input class="in" id="secWordInput" type="text" placeholder="Type a word and press Enter"></div>`;
+return"";}
+function secRenderChips(){const host=document.getElementById("secWordChips");if(!host)return;host.innerHTML=__secWords.length?__secWords.map(a=>`<span class="chip">${E(a)}<button type="button" class="chipx" data-wchipx="${E(a)}" aria-label="Remove ${E(a)}">×</button></span>`).join(""):`<span class="chip-empty">No words yet.</span>`;}
+function openSecModal(id){const c=SEC_CARDS.find(x=>x.id===id);if(!c)return;__secModalId=id;
+document.getElementById("secModalIcon").innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true">${I[c.icon]||""}</svg>`;
+document.getElementById("secModalTitle").textContent=c.title;
+document.getElementById("secModalBody").innerHTML=(c.mdesc?`<p style="color:var(--mut);font-size:.86rem;margin:0 0 6px">${E(c.mdesc)}</p>`:"")+(c.goto?`<p style="margin:10px 0"><button class="btn p" type="button" data-secgoto="${c.goto}">Open Punishments</button></p>`:"")+c.fields.map(secFieldHTML).join("");
+if(c.id==="blockedwords"){__secWords=String(S.sysWordList||"").split("\n").map(s=>s.trim()).filter(Boolean);secRenderChips();}
+document.getElementById("secModal").hidden=false;
+const f=document.querySelector("#secModalBody input,#secModalBody select");if(f)f.focus();}
+function secReadFields(c){c.fields.forEach(f=>{const[t,k]=f;if(t==="chips")return;const el=document.getElementById("sm-"+k);if(!el)return;if(t==="nm")S[k]=Math.max(0,Math.round(+el.value||0));else S[k]=el.value;});if(c.id==="blockedwords")S.sysWordList=__secWords.join("\n");}
+function secModalClose(saved){if(!saved&&__secPending&&__secPending.wasOff){const c=SEC_CARDS.find(x=>x.id===__secPending.id);if(c)Object.keys(__secPending.snap).forEach(k=>{S[k]=__secPending.snap[k];});__secPending=null;chk();updateSecUI();}document.getElementById("secModal").hidden=true;__secModalId=null;if(__secOpener&&__secOpener.focus)try{__secOpener.focus()}catch(_){}__secOpener=null;}
+function secToggle(id,btn){const c=SEC_CARDS.find(x=>x.id===id);if(!c)return;__secOpener=btn||null;
+if(!c.get()){const snap={};c.keys.forEach(k=>{snap[k]=cl(S[k]);});__secPending={id,snap,wasOff:true};c.setOn();chk();updateSecUI();
+if(c.cmd){window.__ceSecReturn=true;window.__ceSecRevert={key:"c_"+c.cmd,prev:0};openCmdEdit(c.cmd);}else openSecModal(id);
+}else{if(!confirm("Turn off "+c.title+"? Its saved settings stay stored but will no longer apply."))return;c.setOff();chk();updateSecUI();}}
+function go(k){cur=k;const p=P[k];if(window.__ovT){clearInterval(window.__ovT);window.__ovT=null;}document.querySelectorAll(".nv[data-k]").forEach(b=>{b.dataset.k==k?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current")});
+let h=`<div class="ph"><h1>${p.t}</h1><p>${p.d}</p></div>`;
+if(k=="overview"){const per=window.__anaPeriod||7;const cmp=!!window.__anaCmp;
+h+=`<h2 class="sech">Server Statistics</h2><div class="sstats">`+[["users","Total Members","ss-members","ss-members-sub"],["chat","Messages","ss-messages","ss-messages-sub"],["bolt","Voice minutes","ss-voice","ss-voice-sub"],["shield","Mod Actions","ss-mods","ss-mods-sub"],["gear","Active Modules","ss-modules","ss-modules-sub"]].map(c=>`<div class="sstat"><span class="sic"><svg viewBox="0 0 24 24" aria-hidden="true">${I[c[0]]}</svg></span><em>${c[1]}</em><b id="${c[2]}">—</b><small id="${c[3]}">Loading…</small></div>`).join("")+`</div>`;
+h+=`<div class="card"><h2>Quick actions</h2><div class="qa">${["welcome","moderation","automod","logging","tickets"].map(x=>`<button class="btn" data-go="${x}">${P[x].t}</button>`).join("")}</div></div>`;
+h+=`<div class="ana-head"><div><h2>Server Analytics</h2><p>Track your server's activity and growth</p></div><div class="ana-ctl"><div class="sw-w"><span class="sw-st">Compare periods</span><button class="sw" id="anaCmp" role="switch" aria-checked="${cmp}" aria-label="Compare periods"></button></div><select class="in" id="anaPeriod" aria-label="Period"><option value="7"${per===7?" selected":""}>1 Week</option><option value="30"${per===30?" selected":""}>1 Month</option></select></div></div><div class="anagrid" id="anaGrid"><p class="empty">Loading analytics…</p></div>`;}
+else if(k=="premium")h+=`<div class="card"><div class="row"><div><span class="lb">Current plan</span><small>Free</small></div></div><p class="empty">Paid plans are not available yet. When they launch, you can manage your plan here.</p></div>`;
+else if(k=="audit")h+=`<div class="card">${AUD.length?AUD.map(a=>`<div class="row"><div><span class="lb">Settings saved</span><small>${a.c.length?E(a.c.join(", ")):"No changes"}</small></div><small>${a.t}</small></div>`).join(""):`<p class="empty">No changes yet. Saved settings will be listed here for this session.</p>`}</div>`;
+else if(k=="applications"){$("#pg").innerHTML=h;renderApplications($("#pg"));$("#body").scrollTop=0;$("#crumb").textContent="Dashboard / "+p.t;document.title=p.t+" — Vela Dashboard";return}
+else if(k=="tickets"){$("#pg").innerHTML=h;renderTickets($("#pg"));$("#body").scrollTop=0;$("#crumb").textContent="Dashboard / "+p.t;document.title=p.t+" — Vela Dashboard";return}
+else if(k=="templates"){$("#pg").innerHTML=h;renderTemplates($("#pg"));$("#body").scrollTop=0;$("#crumb").textContent="Dashboard / "+p.t;document.title=p.t+" — Vela Dashboard";return}
+else if(k=="notifications"){$("#pg").innerHTML=h;renderNotifications($("#pg"));$("#body").scrollTop=0;$("#crumb").textContent="Dashboard / "+p.t;document.title=p.t+" — Vela Dashboard";return}
+else if(k=="logging"){h+=logTabsHTML()+logCardsHTML()}
+else if(k=="security"){h+=healthHTML(k)+secTabsHTML()+secCardsHTML()}
+else{h+=healthHTML(k)+p.g.map(g=>cardHTML(g[0],g[1],k)).join("")}
+$("#pg").innerHTML=h;document.querySelectorAll(".im").forEach(thumb);updAll();if(k==="overview")startOv();$("#body").scrollTop=0;$("#crumb").textContent="Dashboard / "+p.t;document.title=p.t+" — Vela Dashboard";try{if(("#"+k)!==location.hash)history.replaceState(null,"","#"+k)}catch(_){}}
+function syncRTL(){const ar=S.lang==="العربية";document.documentElement.dir=ar?"rtl":"ltr";document.documentElement.lang=ar?"ar":"en"}
+function setSw(k,on){S[k]=on?1:0;document.querySelectorAll(`.sw[data-k="${k}"]`).forEach(b=>b.setAttribute("aria-checked",!!on));document.querySelectorAll(`[data-st="${k}"]`).forEach(s=>s.textContent=on?"Enabled":"Disabled");document.querySelectorAll(`.card[data-master="${k}"]`).forEach(c=>c.classList.toggle("open",!!on));chk();if(typeof updAll==="function")updAll();if(document.getElementById("logTabs"))updateLogTabs();}
+const pg=$("#pg");
+pg.addEventListener("click",e=>{const st=e.target.closest("[data-sec]");if(st){secToggle(st.dataset.sec,st);return}
+const sm=e.target.closest("[data-secmanage]");if(sm){const c=SEC_CARDS.find(x=>x.id===sm.dataset.secmanage);if(c){__secOpener=sm;__secPending=null;if(c.cmd){window.__ceSecReturn=true;window.__ceSecRevert=null;openCmdEdit(c.cmd);}else openSecModal(c.id);}return}
+const slt=e.target.closest("[data-sectab]");if(slt){setSecTab(slt.dataset.sectab);return}
+const rt=e.target.closest("[data-anaretry]");if(rt){loadServerStats();loadAnalytics();return}
+const ac=e.target.closest("#anaCmp");if(ac){window.__anaCmp=!window.__anaCmp;ac.setAttribute("aria-checked",!!window.__anaCmp);loadAnalytics();return}
+const lt=e.target.closest("[data-logtab]");if(lt){__logCat=lt.dataset.logtab;updateLogTabs();return}
+const lmm=e.target.closest("[data-logmanage]");if(lmm){openLogManage(lmm.dataset.logmanage);return}
+const ad=e.target.closest("[data-adv]>button");if(ad){const w=ad.closest("[data-adv]"),o=w.classList.toggle("open");ad.setAttribute("aria-expanded",o);return}
+const rl=e.target.closest("[data-rl]");if(rl){const p=rl.dataset.rl;S[p+"Nx"]=50;S[p+"Ny"]=78;S[p+"Ns"]=7;S[p+"Ax"]=50;S[p+"Ay"]=36;S[p+"As"]=20;updPv(p);chk();return}const g=e.target.closest("[data-go]");if(g)return go(g.dataset.go);
+const s=e.target.closest(".sw");if(s){const k=s.dataset.k,turnOn=!S[k];if(PROT.includes(k)){if(!turnOn){if(!confirm("Turn off this protection? The server becomes exposed. You can re-enable it anytime; the audit log records who did it."))return}s.setAttribute("aria-disabled","true");const st=s.closest(".sw-w")&&s.closest(".sw-w").querySelector("[data-st]");if(st)st.textContent=turnOn?"Enabling…":"Disabling…";setTimeout(()=>{s.removeAttribute("aria-disabled");setSw(k,turnOn)},600);return}setSw(k,turnOn);return}
+const z=e.target.closest(".dz");if(z)return z.closest(".im").querySelector("input[type=file]").click();
+const v=e.target.closest(".vars button");if(v){const ta=document.getElementById(v.parentNode.dataset.t);ta.value+=" "+v.textContent;ta.dispatchEvent(new Event("input",{bubbles:true}))}});
+pg.addEventListener("keydown",e=>{const z=e.target.closest(".dz");if(z&&(e.key=="Enter"||e.key==" ")){e.preventDefault();z.click();return}
+const nm=e.target.closest(".el");if(!nm)return;const p=nm.closest(".pvw").dataset.p,E=nm.dataset.e,ks=p+E,[lo,hi,sz]=E=="N"?[2,20,.5]:[6,50,1],st=e.shiftKey?5:1,mv={ArrowLeft:["x",-st],ArrowRight:["x",st],ArrowUp:["y",-st],ArrowDown:["y",st]}[e.key];
+if(mv){e.preventDefault();S[ks+mv[0]]=Math.min(100,Math.max(0,+(S[ks+mv[0]]+mv[1]).toFixed(1)))}else if(e.key=="+"||e.key=="="){e.preventDefault();S[ks+"s"]=Math.min(hi,+(S[ks+"s"]+sz).toFixed(1))}else if(e.key=="-"){e.preventDefault();S[ks+"s"]=Math.max(lo,+(S[ks+"s"]-sz).toFixed(1))}else return;updPv(p);chk()});
+pg.addEventListener("input",e=>{const u=e.target.dataset.u,w=e.target.closest(".im");
+if(u){const v=e.target.value.trim();if(v&&!/^https?:\/\//i.test(v)){w.querySelector(".er").textContent="Enter a link that starts with http:// or https://";return}setImg(w,v);return}
+const k=e.target.dataset.k;if(!k)return;S[k]=e.target.type=="number"?+e.target.value:e.target.value;chk();updAll()});
+pg.addEventListener("change",e=>{if(e.target&&e.target.id==="anaPeriod"){window.__anaPeriod=+e.target.value||7;loadAnalytics();return}if(e.target.type=="file"){pick(e.target.closest(".im"),e.target.files[0]);e.target.value=""}else if(e.target.tagName=="SELECT"){S[e.target.dataset.k]=e.target.value;chk();syncRTL();if(e.target.dataset.k==="lang")go(cur)}else if(e.target.dataset.u==="wImg"){const w=e.target.closest(".im");const v=e.target.value.trim();if(v&&/^https?:\/\//i.test(v))cutWelcomeBg(w,{imageUrl:v})}});
+["dragenter","dragover"].forEach(n=>pg.addEventListener(n,e=>{const z=e.target.closest(".dz");if(z){e.preventDefault();z.classList.add("on")}}));
+pg.addEventListener("dragleave",e=>{const z=e.target.closest(".dz");if(z)z.classList.remove("on")});
+pg.addEventListener("drop",e=>{const z=e.target.closest(".dz");if(z){e.preventDefault();z.classList.remove("on");pick(z.closest(".im"),e.dataTransfer.files[0])}});
+addEventListener("dragover",e=>e.preventDefault());addEventListener("drop",e=>e.preventDefault());
+let dr=null;
+pg.addEventListener("pointerdown",e=>{const n=e.target.closest(".el");if(!n)return;const cv=n.closest(".cv"),p=cv.closest(".pvw").dataset.p,E=n.dataset.e,k=p+E,r=cv.getBoundingClientRect(),nr=n.getBoundingClientRect(),cx=nr.left+nr.width/2,cy=nr.top+nr.height/2;e.preventDefault();n.focus();if(n.setPointerCapture)try{n.setPointerCapture(e.pointerId)}catch(_){} 
+dr={p,k,E,r,h:!!e.target.closest(".h"),x0:e.clientX,y0:e.clientY,sx:S[k+"x"],sy:S[k+"y"],ss:S[k+"s"],cx,cy,d0:Math.hypot(e.clientX-cx,e.clientY-cy)||1}});
+pg.addEventListener("pointermove",e=>{if(!dr)return;const{p,k,r,E}=dr,c=(v,a,b)=>Math.round(Math.min(b,Math.max(a,v))*10)/10,[lo,hi]=E=="N"?[2,20]:[6,50];
+if(dr.h)S[k+"s"]=c(dr.ss*Math.hypot(e.clientX-dr.cx,e.clientY-dr.cy)/dr.d0,lo,hi);else{S[k+"x"]=c(dr.sx+(e.clientX-dr.x0)/r.width*100,0,100);S[k+"y"]=c(dr.sy+(e.clientY-dr.y0)/r.height*100,0,100)}updPv(p);chk()});
+["pointerup","pointercancel"].forEach(n=>pg.addEventListener(n,()=>dr=null));
+async function uploadDataUrl(dataUrl){
+  const r=await window.__velaFetch("/api/vela/upload",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({image:dataUrl})});
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok||!d.url)throw new Error((d&&d.error)||"upload failed");
+  return d.url;
+}
+async function saveState(){
+  try{
+    const st=cl(S);
+    for(const k of ["wImg","gImg","anImg"]){
+      if(typeof st[k]==="string"&&st[k].startsWith("data:image/")){
+        st[k]=await uploadDataUrl(st[k]);
+      }
+    }
+    const c=Object.keys(st).filter(k=>JSON.stringify(st[k])!==JSON.stringify(saved[k])).map(k=>LBL[k]||k);
+    const r=await window.__velaFetch("/api/vela/save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({state:st})});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok||!d.success)throw new Error((d&&d.errors&&d.errors[0])||(d&&d.error)||"save failed");
+    S=st;saved=cl(S);chk();
+    AUD.unshift({t:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),c:[...new Set(c)]});
+    toast("Changes saved.");
+    if(cur==="applications")go(cur);
+    return true;
+  }catch(err){toast("Not saved: "+(err.message||err),true);return false}
+}
+function welcomeTestConfig(){
+  const chs=window.__VELA_CHANNELS||[];
+  const raw=String(S.wCh||"").trim();
+  let id=chs.some(c=>String(c.id)===raw)?raw:"";
+  if(!id){
+    const nm=raw.replace(/^#/,"").toLowerCase();
+    const f=chs.find(c=>String(c.name||"").toLowerCase()===nm);
+    id=f?f.id:"";
+  }
+  if(!id){toast("Pick a welcome channel first.",true);return null}
+  const px=(v,f)=>Math.round(Number(v||0)/100*f);
+  const cl=(v,a,b)=>Math.min(b,Math.max(a,v));
+  return {
+    enabled:true,channelId:id,imageChannelId:id,
+    messageType:"card",imageMode:"with",textEnabled:!!S.wOn,
+    message:String(S.wMsg||""),textMessage:String(S.wMsg||""),
+    card:{enabled:true,background:String(S.wImg||""),
+      username:{text:"{username}",x:cl(px(S.wNx,800),0,800),y:cl(px(S.wNy,350),0,350),fontSize:cl(px(S.wNs,800),8,120),color:"#ffffff",align:"center",show:S.wShowN!==false},
+      avatar:{x:cl(px(S.wAx,800),0,800),y:cl(px(S.wAy,350),0,350),size:cl(px(S.wAs,800),20,400),shape:"circle",borderWidth:4,borderColor:"#3b82f6",show:S.wShowA!==false}},
+    dm:{enabled:!!S.wDm,message:String(S.wMsg||"")}
+  };
+}
+async function sendWelcomeTest(){
+  const cfg=welcomeTestConfig();if(!cfg)return;
+  toast("Sending test card…");
+  try{
+    const r=await window.__velaFetch("/api/welcome/test",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(cfg)});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok||!d.success)throw new Error((d&&d.error)||"test failed");
+    toast(d.message||"Test card sent.");
+  }catch(e){toast("Test failed: "+(e.message||e),true)}
+}
+pg.addEventListener("click",e=>{const a=e.target.closest("[data-act]");if(!a)return;if(a.dataset.act==="wTest")sendWelcomeTest();if(a.dataset.act==="anSend")sendAnnounce();if(a.dataset.act==="vPost")sendVerifyPost()});
+async function sendVerifyPost(){
+  if(!S.vCh){toast("Pick a verification channel first.",true);return}
+  toast("Posting verify message…");
+  try{
+    const r=await window.__velaFetch("/api/verify/post",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({channelId:S.vCh,title:"Verification",message:S.vMsg,imageUrl:S.vEmbImg,useEmbed:S.vEmbOn})});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok||!d.success)throw new Error((d&&d.error)||"post failed");
+    toast(d.message||"Verify message posted.");
+  }catch(e){toast("Post failed: "+(e.message||e),true)}
+}
+async function sendAnnounce(){
+  if(!S.anCh){toast("Pick an announcement channel first.",true);return}
+  toast("Sending announcement…");
+  try{
+    const r=await window.__velaFetch("/api/announce/send",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({channelId:S.anCh,title:S.anTitle,message:S.anMsg,imageUrl:S.anImg,mention:S.anMention})});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok||!d.success)throw new Error((d&&d.error)||"send failed");
+    toast(d.message||"Announcement sent.");
+  }catch(e){toast("Send failed: "+(e.message||e),true)}
+}
+$("#sv").onclick=async()=>{
+  const btn=$("#sv");
+  btn.disabled=true;
+  await saveState();
+  btn.disabled=false;
+};
+$("#rs").onclick=()=>{S=cl(saved);chk();go(cur)};
+let ceCmd=null;
+let ceAliasesArr=[],ceAliasesOrig=[];
+let ceInvCmd=null,ceInvAliasesArr=[],ceInvAliasesOrig=[];
+const ceParseAliases=s=>String(s||"").split(",").map(a=>a.trim().toLowerCase().replace(/^[/!]+/,"")).filter((a,i,arr)=>a&&arr.indexOf(a)===i);
+function ceRenderAliases(){const host=$("#ceChips");host.innerHTML=ceAliasesArr.length?ceAliasesArr.map(a=>`<span class="chip">${E(a)}<button type="button" class="chipx" data-chipx="${E(a)}" aria-label="Remove alias ${E(a)}">×</button></span>`).join(""):`<span class="chip-empty">No aliases yet.</span>`}
+function ceRenderInvAliases(){const host=$("#ceInvChips");host.innerHTML=ceInvAliasesArr.length?ceInvAliasesArr.map(a=>`<span class="chip">${E(a)}<button type="button" class="chipx" data-chipx="${E(a)}" aria-label="Remove alias ${E(a)}">×</button></span>`).join(""):`<span class="chip-empty">No aliases yet.</span>`}
+function ceWriteAliases(){if(ceCmd){S["aliases_"+ceCmd]=ceAliasesArr.join(", ");chk()}}
+function ceWriteInvAliases(){if(ceInvCmd){S["aliases_"+ceInvCmd]=ceInvAliasesArr.join(", ");chk()}}
+function cmdDesc(n){const all=CM.concat(SYS_SEC,SYS_BRL,SYS_SET_PUN,SYS_TKT,SYS_SET_SRV);return((all.find(c=>c[0]===n)||[n,n])[1])}
+function ddFill(rootId,items,selected){const root=document.getElementById(rootId);if(!root)return;const list=root.querySelector(".dd-list");const have=new Set(items.map(o=>String(o.v)));const legacy=(selected||[]).filter(id=>!have.has(String(id))).map(id=>({v:String(id),label:"Deleted ("+id+")"}));list.innerHTML=items.concat(legacy).map(o=>`<label data-n="${E(o.label.toLowerCase())}"><input type="checkbox" value="${E(o.v)}"${(selected||[]).includes(String(o.v))?" checked":""}>${E(o.label)}</label>`).join("")||`<p class="empty">None found.</p>`;ddCount(root)}
+function ddCount(root){const n=root.querySelectorAll("input:checked").length;const s=root.querySelector(".dd-n");if(s)s.textContent=n?n+" selected":"None selected"}
+function openCmdEdit(n){ceCmd=n;const d=(CM.find(c=>c[0]===n)||[n,n])[1];$("#cmdModalTitle").textContent="/"+n+" — "+d;$("#ceCooldown").value=S["cooldown_"+n]??5;ceAliasesArr=ceParseAliases(S["aliases_"+n]);ceAliasesOrig=[...ceAliasesArr];$("#ceAliases").value="";ceRenderAliases();ceInvCmd=PAIRS[n]||null;const w=$("#ceInvWrap");if(ceInvCmd){$("#ceInvLabel").textContent="Inverse command: /"+ceInvCmd+" — "+cmdDesc(ceInvCmd);$("#ceInvHint").textContent="Leave it empty and /"+n+" does both actions itself (toggle). Add an alias to use a separate command — you decide.";ceInvAliasesArr=ceParseAliases(S["aliases_"+ceInvCmd]);ceInvAliasesOrig=[...ceInvAliasesArr];$("#ceInvAliases").value="";ceRenderInvAliases();w.hidden=false}else{ceInvAliasesArr=[];ceInvAliasesOrig=[];w.hidden=true}const roles=(window.__VELA_ROLES||[]).map(r=>({v:String(r.id),label:String(r.name)}));const chs=(window.__VELA_CHANNELS||[]).map(c=>({v:String(c.id),label:"#"+c.name}));ddFill("ddAllowRole",roles,S["allowroles_"+n]||[]);ddFill("ddDenyRole",roles,S["denyroles_"+n]||[]);ddFill("ddAllowCh",chs,S["allowchats_"+n]||[]);ddFill("ddDenyCh",chs,S["denychats_"+n]||[]);document.querySelectorAll("#cmdModal .dd-panel").forEach(p=>p.hidden=true);$("#cmdModal").hidden=false}
+function closeCmdEdit(){ceCmd=null;ceInvCmd=null;document.querySelectorAll("#cmdModal .dd-panel").forEach(p=>p.hidden=true);$("#cmdModal").hidden=true}
+pg.addEventListener("click",e=>{const b=e.target.closest("[data-cmd-edit]");if(b){window.__ceSecReturn=false;window.__ceSecRevert=null;openCmdEdit(b.dataset.cmdEdit)}});
+document.addEventListener("click",e=>{const btn=e.target.closest("[data-dd-btn]");document.querySelectorAll(".dd-panel").forEach(p=>{if(!btn||p!==btn.closest(".dd").querySelector(".dd-panel"))p.hidden=true});if(btn){const p=btn.closest(".dd").querySelector(".dd-panel");p.hidden=!p.hidden;if(!p.hidden){const s=p.querySelector(".dd-search");if(s){s.value="";s.dispatchEvent(new Event("input",{bubbles:true}));const f=p.querySelector("input[type=checkbox]");if(f)f.focus()}}}});
+document.addEventListener("input",e=>{if(e.target.classList&&e.target.classList.contains("dd-search")){const q=e.target.value.trim().toLowerCase();e.target.closest(".dd-panel").querySelectorAll(".dd-list label").forEach(l=>{l.style.display=!q||l.dataset.n.includes(q)?"":"none"})}});
+document.addEventListener("change",e=>{const dd=e.target.closest&&e.target.closest(".dd");if(dd&&e.target.type==="checkbox")ddCount(dd)});
+$("#ceCancel").onclick=()=>{if(ceCmd){S["aliases_"+ceCmd]=ceAliasesOrig.join(", ");chk()}if(ceInvCmd){S["aliases_"+ceInvCmd]=ceInvAliasesOrig.join(", ");chk()}if(window.__ceSecRevert){S[window.__ceSecRevert.key]=window.__ceSecRevert.prev;window.__ceSecRevert=null;chk();updateSecUI();}window.__ceSecReturn=false;closeCmdEdit()};
+$("#ceAliases").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();const vals=ceParseAliases($("#ceAliases").value).filter(a=>!ceAliasesArr.includes(a));if(!vals.length)return;ceAliasesArr=ceAliasesArr.concat(vals);$("#ceAliases").value="";ceRenderAliases();ceWriteAliases()}});
+$("#ceInvAliases").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();const vals=ceParseAliases($("#ceInvAliases").value).filter(a=>!ceInvAliasesArr.includes(a));if(!vals.length)return;ceInvAliasesArr=ceInvAliasesArr.concat(vals);$("#ceInvAliases").value="";ceRenderInvAliases();ceWriteInvAliases()}});
+$("#ceChips").addEventListener("click",e=>{const b=e.target.closest("[data-chipx]");if(!b||!ceCmd)return;ceAliasesArr=ceAliasesArr.filter(a=>a!==b.dataset.chipx);ceRenderAliases();ceWriteAliases()});
+$("#ceInvChips").addEventListener("click",e=>{const b=e.target.closest("[data-chipx]");if(!b||!ceInvCmd)return;ceInvAliasesArr=ceInvAliasesArr.filter(a=>a!==b.dataset.chipx);ceRenderInvAliases();ceWriteInvAliases()});
+$("#cmdModal").addEventListener("click",e=>{if(e.target===$("#cmdModal"))closeCmdEdit()});
+addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#cmdModal").hidden)closeCmdEdit()});
+addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#logModal").hidden)closeLogManage()});
+$("#logModal").addEventListener("click",e=>{if(e.target===$("#logModal"))closeLogManage()});
+$("#secModal").addEventListener("click",e=>{if(e.target===$("#secModal"))secModalClose(false);const x=e.target.closest("[data-wchipx]");if(x){__secWords=__secWords.filter(a=>a!==x.dataset.wchipx);secRenderChips();return;}const g=e.target.closest("[data-secgoto]");if(g){secModalClose(true);setSecTab(g.dataset.secgoto);}});
+document.getElementById("secModal").addEventListener("keydown",e=>{
+if(e.key==="Tab"){const f=[...document.querySelectorAll("#secModal button,#secModal input,#secModal select,#secModal textarea")].filter(el=>!el.disabled&&el.offsetParent!==null);if(!f.length)return;const first=f[0],last=f[f.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}return;}
+if(e.target&&e.target.id==="secWordInput"&&e.key==="Enter"){e.preventDefault();const v=e.target.value.trim();if(v&&!__secWords.includes(v)){__secWords.push(v);secRenderChips();}e.target.value="";}});
+$("#secX").onclick=()=>secModalClose(false);
+$("#secCancel").onclick=()=>secModalClose(false);
+$("#secReset").onclick=()=>{const c=SEC_CARDS.find(x=>x.id===__secModalId);if(!c)return;c.keys.forEach(k=>{S[k]=cl(DEF[k]);});if(c.id==="blockedwords")__secWords=[];chk();openSecModal(c.id);};
+$("#secSave").onclick=async()=>{const c=SEC_CARDS.find(x=>x.id===__secModalId);if(!c)return;secReadFields(c);__secPending=null;chk();secModalClose(true);updateSecUI();await saveState();toast("Changes saved.");};
+$("#lmColor").addEventListener("input",e=>{document.getElementById("lmColorHex").textContent=String(e.target.value||"").toUpperCase()});
+$("#lmCancel").onclick=()=>closeLogManage();
+$("#lmSave").onclick=async()=>{if(!lmEv)return;const n=lmEv;S["lgch_"+n]=document.getElementById("lmChannel").value;S["lgco_"+n]=document.getElementById("lmColor").value;S["lgping_"+n]=[...document.querySelectorAll("#lmDdPing input:checked")].map(i=>i.value);S["lgigch_"+n]=[...document.querySelectorAll("#lmDdIgCh input:checked")].map(i=>i.value);S["lgigroles_"+n]=[...document.querySelectorAll("#lmDdIgRole input:checked")].map(i=>i.value);chk();closeLogManage();go("logging");await saveState()};
+$("#ceSave").onclick=async()=>{if(!ceCmd)return;const n=ceCmd;S["cooldown_"+n]=Math.max(0,Math.round(+$("#ceCooldown").value||0));S["aliases_"+n]=ceAliasesArr.join(", ");if(ceInvCmd)S["aliases_"+ceInvCmd]=ceInvAliasesArr.join(", ");S["allowroles_"+n]=[...document.querySelectorAll("#ddAllowRole input:checked")].map(i=>i.value);S["denyroles_"+n]=[...document.querySelectorAll("#ddDenyRole input:checked")].map(i=>i.value);S["allowchats_"+n]=[...document.querySelectorAll("#ddAllowCh input:checked")].map(i=>i.value);S["denychats_"+n]=[...document.querySelectorAll("#ddDenyCh input:checked")].map(i=>i.value);chk();closeCmdEdit();if(window.__ceSecReturn){window.__ceSecReturn=false;window.__ceSecRevert=null;updateSecUI();}else go("commands");await saveState()};
+/* Ctrl+K palette: searches settings + commands, max 8 grouped by section */
+const pal=$("#pal"),pin=$("#pin"),pl=$("#pl");let palIdx=0,palItems=[];
+function buildIndex(){const out=[];Object.keys(P).forEach(k=>{const p=P[k];(p.g||[]).forEach(g=>g[1].forEach(f=>{if(f[0]==="pv"||f[0]==="logrow"||f[0]==="cmd"||f[0]==="btn")return;out.push({sec:p.t,mod:k,label:f[2],key:f[1]})}))});return out}
+const IDX=buildIndex();
+function openPal(){pal.classList.add("o");pin.value="";renderPal("");setTimeout(()=>pin.focus(),30)}
+function closePal(){pal.classList.remove("o")}
+function renderPal(q){q=q.trim().toLowerCase();const r=(q?IDX.filter(i=>(i.label+" "+i.sec).toLowerCase().includes(q)):IDX.slice(0,8)).slice(0,8);palItems=r;palIdx=0;pl.innerHTML=r.length?r.map((i,n)=>`<button type="button" role="option" data-n="${n}" aria-selected="${n===0}"><span>${E(i.label)}</span><small>${E(i.sec)}</small></button>`).join(""):`<div style="padding:16px;color:var(--mut);font-size:.86rem">No matches. Try “welcome”, “log” or “ban”.</div>`}
+pin.addEventListener("input",()=>renderPal(pin.value));
+pl.addEventListener("click",e=>{const b=e.target.closest("button[data-n]");if(b)jump(+b.dataset.n)});
+function jump(n){const it=palItems[n];if(!it)return;closePal();go(it.mod);setTimeout(()=>{const el=document.getElementById(it.key)||document.querySelector(`[data-k="${it.key}"]`);if(el){el.scrollIntoView({block:"center"});el.focus&&el.focus({preventScroll:true});const ad=el.closest(".adv");if(ad){ad.classList.add("open");ad.querySelector("button").setAttribute("aria-expanded","true")}}},60)}
+function renderPalActive(){pl.querySelectorAll("button").forEach((b,n)=>b.setAttribute("aria-selected",n===palIdx))}
+$("#kp").onclick=openPal;pal.addEventListener("click",e=>{if(e.target===pal)closePal()});
+addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();pal.classList.contains("o")?closePal():openPal()}if(pal.classList.contains("o")&&palItems.length){if(e.key==="ArrowDown"){e.preventDefault();palIdx=(palIdx+1)%palItems.length;renderPalActive()}if(e.key==="ArrowUp"){e.preventDefault();palIdx=(palIdx-1+palItems.length)%palItems.length;renderPalActive()}if(e.key==="Enter"){e.preventDefault();jump(palIdx)}}});
+const side=$("#side"),sc=$("#sc"),tg=o=>{side.classList.toggle("o",o);sc.classList.toggle("o",o)};
+$("#mn").onclick=()=>tg(1);sc.onclick=()=>tg(0);addEventListener("keydown",e=>{if(e.key=="Escape")tg(0)});
+const collapseBtn=$("#collapseBtn");if(collapseBtn)collapseBtn.onclick=()=>{const app=document.querySelector(".app");const closed=app.classList.toggle("closed");collapseBtn.setAttribute("aria-expanded",!closed);};
+</script>
+</body>
+</html>

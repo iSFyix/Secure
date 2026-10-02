@@ -1,0 +1,9 @@
+<%- include('partials/head') %>
+<%- include('partials/sidebar') %>
+<div class="ph"><h1><%= title %></h1><p>Pick a category.</p></div>
+<div class="card"><h2>Categories</h2>
+<% (typeof categories !== 'undefined' ? categories : []).forEach(c => { %>
+<div class="row"><div><span class="lb"><%= c.name %></span><small><%= c.id %></small></div><a class="btn" href="/commands/<%= c.id %>">Open</a></div>
+<% }) %>
+</div>
+<%- include('partials/foot') %>

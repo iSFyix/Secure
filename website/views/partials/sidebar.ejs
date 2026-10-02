@@ -1,0 +1,40 @@
+<% const _p = typeof path !== 'undefined' ? path : '/'; const _cur = (h) => _p === h ? ' aria-current="page"' : ''; %>
+<body>
+<div class="app">
+<aside class="side" aria-label="Dashboard navigation">
+<a class="brand" href="/dashboard">Vela</a>
+<p class="gh">Overview</p>
+<a class="nv" href="/dashboard"<%= _cur('/dashboard') %>>Overview</a>
+<p class="gh">Protection</p>
+<a class="nv" href="/protection"<%= _cur('/protection') %>>Protection</a>
+<a class="nv" href="/dashboard#moderation">Moderation</a>
+<a class="nv" href="/dashboard#automod">Auto Moderation</a>
+<a class="nv" href="/dashboard#security">Security</a>
+<p class="gh">Welcome &amp; Roles</p>
+<a class="nv" href="/welcome"<%= _cur('/welcome') %>>Welcome</a>
+<a class="nv" href="/dashboard#roles">Reaction Roles</a>
+<p class="gh">Engagement</p>
+<a class="nv" href="/tickets"<%= _cur('/tickets') %>>Tickets</a>
+<a class="nv" href="/apply"<%= _cur('/apply') %>>Applications</a>
+<a class="nv" href="/rules"<%= _cur('/rules') %>>Rules</a>
+<a class="nv" href="/giveaway"<%= _cur('/giveaway') %>>Giveaways</a>
+<a class="nv" href="/dashboard#leveling">Leveling</a>
+<a class="nv" href="/dashboard#templates">Templates</a>
+<p class="gh">Logs</p>
+<a class="nv" href="/logs">Logging</a>
+<a class="nv" href="/dashboard#audit">Audit Log</a>
+<p class="gh">Settings</p>
+<a class="nv" href="/settings"<%= _cur('/settings') %>>Settings</a>
+<a class="nv" href="/commands"<%= _cur('/commands') %>>Commands</a>
+<a class="nv" href="/dashboard#custom">Custom Commands</a>
+<a class="nv" href="/autoreply"<%= _cur('/autoreply') %>>Auto Reply</a>
+<a class="nv" href="/suggestions"<%= _cur('/suggestions') %>>Suggestions</a>
+<a class="nv" href="/tempChannels"<%= _cur('/tempChannels') %>>Temp Channels</a>
+<a class="nv" href="/dashboard#announce">Announcements</a>
+<div class="grow"></div>
+<a class="nv" href="/docs"<%= _cur('/docs') %>>Documentation</a>
+<a class="nv" href="/logout">Log out</a>
+</aside>
+<div class="main">
+<header class="top"><span class="grow"><%= typeof breadcrumbs !== 'undefined' ? breadcrumbs : 'Dashboard' %></span><a class="btn" href="/dashboard">Open new dashboard</a></header>
+<div class="body"><div class="wrap">

@@ -1,0 +1,12 @@
+<%- include('partials/head') %>
+<%- include('partials/sidebar') %>
+<div class="ph"><h1><%= title %></h1><p>Raid, spam and abuse protection. Changes are made in the new dashboard and recorded in the audit log.</p></div>
+<div class="health" role="status">Monitor-only first: new rules log what they would do before punishing. Use exemptions for trusted roles. No system promises full protection.</div>
+<div class="card"><h2>Modules</h2>
+<% const _s = typeof settings !== 'undefined' ? settings.protection || {} : {}; %>
+<% ['antispam','server','antibot','channel','role','timeout','moderation'].forEach(m => { const on = _s[m] && _s[m].enabled; %>
+<div class="row"><div><span class="lb"><%= m %></span><small><%= on ? 'Enabled' : 'Disabled' %></small></div><span class="pill<%= on ? ' on' : '' %>" aria-label="<%= m %> is <%= on ? 'enabled' : 'disabled' %>"><%= on ? 'Enabled' : 'Disabled' %></span></div>
+<% }) %>
+</div>
+<div class="card"><div class="row"><div><span class="lb">Edit protection</span></div><a class="btn p" href="/dashboard#security">Open Security</a></div></div>
+<%- include('partials/foot') %>

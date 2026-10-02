@@ -1,0 +1,92 @@
+{
+  "dashboard": {
+    "title": "Dashboard",
+    "settings": {
+      "title": "Bot Settings"
+    },
+    "commands": {
+      "title": "Commands",
+      "general": "General",
+      "moderation": "Moderation",
+      "utility": "Utility"
+    },
+    "commandDescriptions": {
+      "avatar": "View a user's avatar",
+      "banner": "View a user's banner",
+      "ping": "Check the bot's latency",
+      "roles": "View all server roles",
+      "server": "View server information",
+      "user": "View detailed user information",
+      "ban": "Ban a user from the server",
+      "kick": "Kick a user from the server",
+      "mute": "Mute a user in voice channels",
+      "unmute": "Unmute a user in voice channels",
+      "warn": "Issue a warning to a user",
+      "unwarn": "Remove a warning from a user",
+      "clear": "Delete messages in a channel",
+      "lock": "Lock a channel, preventing messages",
+      "unlock": "Unlock a previously locked channel",
+      "hide": "Hide a channel from regular users",
+      "unhide": "Make a hidden channel visible again",
+      "move": "Move a user to another voice channel",
+      "timeout": "Timeout a user for a duration",
+      "rtimeout": "Remove timeout from a user",
+      "setnick": "Set a user's nickname",
+      "role": "Add a role to a user",
+      "rrole": "Remove a role from a user",
+      "warns": "View a user's warnings",
+      "apply": "Submit a staff application",
+      "ticket": "Create or manage tickets",
+      "unban": "Unban a user from the server"
+    },
+    "logs": {
+      "title": "Logging"
+    },
+    "protection": {
+      "title": "Protection"
+    },
+    "tickets": {
+      "title": "Tickets"
+    },
+    "apply": {
+      "title": "Applications"
+    },
+    "rules": {
+      "title": "Rules"
+    },
+    "giveaway": {
+      "title": "Giveaways"
+    },
+    "tempChannels": {
+      "title": "Temporary Channels"
+    },
+    "autoReply": {
+      "title": "Auto Reply"
+    },
+    "suggestions": {
+      "title": "Suggestions"
+    },
+    "welcome": {
+      "title": "Welcome"
+    },
+    "comingSoon": {
+      "title": "Coming soon",
+      "features": {
+        "selectRoles": { "title": "Reaction Roles" },
+        "games": { "title": "Games" },
+        "autoMod": { "title": "Auto Moderation" },
+        "autoLines": { "title": "Auto Lines" },
+        "leveling": { "title": "Leveling" }
+      }
+    },
+    "error": {
+      "404": {
+        "title": "Not Found",
+        "message": "The page you requested could not be found."
+      }
+    }
+  },
+  "docs": {
+    "title": "Documentation"
+  }
+}

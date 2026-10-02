@@ -1,0 +1,16 @@
+<%- include('partials/head') %>
+<%- include('partials/sidebar') %>
+<div class="ph"><h1><%= title %></h1><p><%= typeof breadcrumbs !== 'undefined' ? breadcrumbs : '' %></p></div>
+<div class="banner">New dashboard available — full controls live at <a href="/dashboard"><u>/dashboard</u></a>. Logging is managed there (tab Logging), this page is a read-only overview.</div>
+<div class="card"><h2>Status</h2>
+<div class="row"><div><span class="lb">Guilds</span><small>Cached guilds</small></div><span class="pill"><%= (typeof stats !== 'undefined' && stats && (stats.servers ?? stats.guilds)) ?? '—' %></span></div>
+<div class="row"><div><span class="lb">Users</span></div><span class="pill"><%= (typeof stats !== 'undefined' && stats && (stats.users ?? stats.members)) ?? '—' %></span></div>
+<div class="row"><div><span class="lb">Commands</span></div><span class="pill"><%= (typeof stats !== 'undefined' && stats && stats.commands) ?? '—' %></span></div>
+</div>
+<% if (typeof moduleStatus !== 'undefined' && moduleStatus) { %>
+<div class="card"><h2>Modules</h2><table class="tbl"><tr><th>Module</th><th>Status</th></tr>
+<% Object.entries(moduleStatus).forEach(([k,v]) => { %><tr><td><%= k %></td><td><span class="pill<%= v ? ' on' : '' %>"><%= v ? 'on' : 'off' %></span></td></tr><% }) %>
+</table></div>
+<% } %>
+<div class="card"><div class="row"><div><span class="lb">Logging</span><small>Managed in the new dashboard tab</small></div><a class="btn p" href="/dashboard#logging">Open Logging</a></div></div>
+<%- include('partials/foot') %>
