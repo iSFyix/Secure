@@ -1,5 +1,0 @@
-<%- include('partials/head') %>
-<%- include('partials/sidebar') %>
-<div class="ph"><h1><%= title %></h1><p>Temporary voice channels.</p></div>
-<div class="card"><div class="row"><div><span class="lb">Enabled</span></div><span class="pill<%= (typeof settings !== 'undefined' && settings.tempChannels && settings.tempChannels.enabled) ? ' on' : '' %>"><%= (typeof settings !== 'undefined' && settings.tempChannels && settings.tempChannels.enabled) ? 'on' : 'off' %></span></div></div>
-<%- include('partials/foot') %>

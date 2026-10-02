@@ -1,5 +1,0 @@
-<%- include('partials/head') %>
-<%- include('partials/sidebar') %>
-<div class="ph"><h1><%= title %></h1><p>Member suggestions with voting.</p></div>
-<div class="card"><div class="row"><div><span class="lb">Enabled</span></div><span class="pill<%= (typeof settings !== 'undefined' && settings.suggestions && settings.suggestions.enabled) ? ' on' : '' %>"><%= (typeof settings !== 'undefined' && settings.suggestions && settings.suggestions.enabled) ? 'on' : 'off' %></span></div></div>
-<%- include('partials/foot') %>

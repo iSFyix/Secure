@@ -1,8 +1,0 @@
-<%- include('partials/head') %>
-<%- include('partials/sidebar') %>
-<div class="ph"><h1><%= title %></h1><p>Support tickets. Full manager in new dashboard.</p></div>
-<div class="card"><h2>Ticket system</h2>
-<div class="row"><div><span class="lb">Enabled</span></div><span class="pill<%= (typeof settings !== 'undefined' && settings.ticket && settings.ticket.enabled) ? ' on' : '' %>"><%= (typeof settings !== 'undefined' && settings.ticket && settings.ticket.enabled) ? 'on' : 'off' %></span></div>
-<div class="row"><div><span class="lb">Channels</span><small><%= (typeof channels !== 'undefined' ? channels.length : 0) %> text channels available</small></div><a class="btn p" href="/dashboard#tickets">Open Tickets</a></div>
-</div>
-<%- include('partials/foot') %>

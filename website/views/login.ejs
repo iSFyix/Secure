@@ -1,8 +1,0 @@
-<%- include('partials/head') %>
-<%- include('partials/sidebar') %>
-<div class="ph"><h1><%= title %></h1><p>Sign in with Discord to manage your server.</p></div>
-<div class="card">
-<h2>Login</h2>
-<div class="row"><div><span class="lb">Discord OAuth</span><small><%= typeof oauthReady !== 'undefined' && oauthReady ? 'Ready' : 'Not configured — set clientSecret and callbackUrl' %></small></div><a class="btn p" href="/auth/discord">Login with Discord</a></div>
-</div>
-<%- include('partials/foot') %>
